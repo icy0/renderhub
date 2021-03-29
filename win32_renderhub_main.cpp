@@ -5,7 +5,8 @@
 
 #include "renderhub_types.h"
 #include "renderhub_input.h"
-#include "dx11_renderhub_renderer.h"
+#include "renderhub_resourceloader.h"
+#include "dx11_win32_renderhub_renderer.h"
 
 uint8* g_keyboard_key_states;
 Mouse_State* g_mouse_state;
@@ -180,6 +181,9 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
     }
 
     ShowWindow(hwnd, nCmdShow);
+
+    win32_read_obj("test_resources\\radiosity_room.obj");
+
     g_window_properties->window_handle = hwnd;
 
     init_directx11(g_display_properties, g_window_properties, g_swap_chain, g_device, g_device_context);

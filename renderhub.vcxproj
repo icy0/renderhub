@@ -170,13 +170,15 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="dx11_renderhub_renderer.cpp" />
+    <ClCompile Include="dx11_win32_renderhub_renderer.cpp" />
     <ClCompile Include="renderhub_input.cpp" />
+    <ClCompile Include="renderhub_resourceloader.cpp" />
     <ClCompile Include="win32_renderhub_main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="dx11_renderhub_renderer.h" />
+    <ClInclude Include="dx11_win32_renderhub_renderer.h" />
     <ClInclude Include="renderhub_input.h" />
+    <ClInclude Include="renderhub_resourceloader.h" />
     <ClInclude Include="renderhub_types.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -1,23 +1,95 @@
 #pragma once
 #include <Windows.h>
+#include <stdint.h>
 
-typedef char				int8;
-typedef short				int16;
-typedef int					int32;
-typedef long				int64;
-typedef long long			int128;
+typedef int8_t		int8;
+typedef int16_t		int16;
+typedef int32_t		int32;
+typedef int64_t		int64;
 
-typedef unsigned char		uint8;
-typedef unsigned short		uint16;
-typedef unsigned int		uint32;
-typedef unsigned long		uint64;
-typedef unsigned long long	uint128;
+typedef uint8_t		uint8;
+typedef uint16_t	uint16;
+typedef uint32_t	uint32;
+typedef uint64_t	uint64;
 
-typedef bool				bool8;
+typedef bool		bool8;
 
-typedef float				real32;
-typedef double				real64;
-typedef long double			real96;
+typedef float		real32;
+typedef double		real64;
+
+struct OBJ_Face
+{
+	uint32 vertex_position_indices[3];
+	uint32 vertex_texcoords_indices[3];
+	uint32 vertex_normal_indices[3];
+};
+
+union ivec2
+{
+	struct
+	{
+		int32 x;
+		int32 y;
+	};
+	int32 coords[2];
+};
+
+union ivec3
+{
+	struct
+	{
+		int32 x;
+		int32 y;
+		int32 z;
+	};
+	int32 coords[3];
+};
+
+union ivec4
+{
+	struct
+	{
+		int32 x;
+		int32 y;
+		int32 z;
+		int32 w;
+	};
+	int32 coords[4];
+};
+
+union fvec2
+{
+	struct
+	{
+		real32 x;
+		real32 y;
+	};
+	real32 coords[2];
+};
+
+union fvec3
+{
+	struct
+	{
+		real32 x;
+		real32 y;
+		real32 z;
+	};
+
+	real32 coords[3];
+};
+
+union fvec4
+{
+	struct
+	{
+		real32 x;
+		real32 y;
+		real32 z;
+		real32 w;
+	};
+	real32 coords[4];
+};
 
 struct Display_Properties
 {
