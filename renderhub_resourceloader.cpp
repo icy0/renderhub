@@ -1,11 +1,12 @@
 #include <stdio.h>
 #include <string>
+#include <assert.h>
 
 #include "renderhub_types.h"
 
-ivec3 parse_vector(const char* line, int32 offset)
+fvec3 parse_vector(const char* line, int32 offset)
 {
-	ivec3 coordinates{0, 0, 0};
+	fvec3 coordinates{0, 0, 0};
 
 	const uint32 number_buffer_size = 256;
 	char number_buffer[number_buffer_size];
@@ -52,10 +53,7 @@ OBJ_Face parse_face(const char* line)
 	int32 component_identifier = 0;
 	int32 group_identifier = 0;
 
-	int32 components[3];
-
-	// TODO keep track of v/vt/vn groups per group_identifier
-	// TODO copy component info into OBJ_Face face
+	ivec3 components;
 
 	// iterate over entire line
 	while (line[offset] != '\0')
@@ -74,7 +72,7 @@ OBJ_Face parse_face(const char* line)
 			if(number_buffer != "")
 			{
 				number_buffer[offset - coordinate_beginning] = '\0';
-				components[component_identifier] = std::stoi(number_buffer);
+				components.coords[component_identifier] = std::stoi(number_buffer);
 			}
 			if (line[offset] != ' ')
 			{
@@ -84,8 +82,12 @@ OBJ_Face parse_face(const char* line)
 				ZeroMemory(number_buffer, number_buffer_size);
 				number_buffer_index = 0;
 			}
-
 		}
+
+		CopyMemory(face.vertices[group_identifier].coords, components.coords, sizeof(ivec3));
+		group_identifier++;
+		assert(group_identifier <= 3);
+
 		component_identifier = 0;
 		offset++;
 
@@ -101,7 +103,7 @@ void win32_read_obj(const char* filename)
 	HANDLE file_handle;
 	ZeroMemory(&file_handle, sizeof(HANDLE));
 	char* file_buffer;
-	LARGE_INTEGER file_size_in_bytes;
+	LARGE_INTEGER file_size_in_bytes = {};
 	if (file_handle = CreateFileA(filename, GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL))
 	{
 		GetFileSizeEx(file_handle, &file_size_in_bytes);
@@ -110,12 +112,9 @@ void win32_read_obj(const char* filename)
 		DWORD bytes_read;
 		ReadFile(file_handle, file_buffer, file_size_in_bytes.QuadPart, &bytes_read, NULL);
 
-		// OutputDebugStringA(file_buffer);
+		OBJ_Model model = {};
 
-		uint64 vpos_count = 0;
-		uint64 vnormal_count = 0;
-		uint64 vtexcoords_count = 0;
-		uint64 face_count = 0;
+		// OutputDebugStringA(file_buffer);
 
 		const int32 line_length = 256;
 		char line[line_length];
@@ -150,17 +149,17 @@ void win32_read_obj(const char* filename)
 				{
 				case(' '): // line holds geometric vertex
 				{
-					vpos_count++;
+					model.vertex_positions_count++;
 					break;
 				}
 				case('t'): // line holds texture vertex
 				{
-					vtexcoords_count++;
+					model.vertex_texcoords_count++;
 					break;
 				}
 				case('n'): // line holds vertex normals
 				{
-					vnormal_count++;
+					model.vertex_normals_count++;
 					break;
 				}
 				}
@@ -168,7 +167,7 @@ void win32_read_obj(const char* filename)
 			}
 			case('f'): // face
 			{
-				face_count++;
+				model.face_count++;
 				break;
 			}
 			//case('m'):
@@ -202,16 +201,21 @@ void win32_read_obj(const char* filename)
 
 		char msg[256];
 		sprintf_s(msg, "vertices: %d, vertex normals: %d, vertex texture coordinates: %d, faces: %d", 
-			vpos_count, vnormal_count, vtexcoords_count, face_count);
+			model.vertex_positions_count, model.vertex_normals_count, model.vertex_texcoords_count, model.face_count);
 		OutputDebugStringA(msg);
 
-		fvec3* vertex_positions = new fvec3[vpos_count];
-		fvec3* vertex_normals = new fvec3[vnormal_count];
-		fvec2* vertex_texcoords = new fvec2[vtexcoords_count];
-		fvec3* faces = new fvec3[face_count];
+		model.vertex_positions = new fvec3[model.vertex_positions_count];
+		model.vertex_texcoords = new fvec3[model.vertex_texcoords_count];
+		model.vertex_normals = new fvec3[model.vertex_normals_count];
+		model.faces = new OBJ_Face[model.face_count];
 
 		incr_file_pointer = file_buffer;
 		incr_line_pointer = line;
+
+		uint32 position_index = 0;
+		uint32 texcoord_index = 0;
+		uint32 normal_index = 0;
+		uint32 face_index = 0;
 
 		while (incr_file_pointer < end_of_file_pointer)
 		{
@@ -239,17 +243,20 @@ void win32_read_obj(const char* filename)
 				{
 				case(' '): // line holds geometric vertex
 				{
-					ivec3 coords = parse_vector(line, sizeof("v ") - 1);
+					model.vertex_positions[position_index] = parse_vector(line, sizeof("v ") - 1);
+					position_index++;
 					break;
 				}
 				case('t'): // line holds texture vertex
 				{
-					parse_vector(line, sizeof("vt ") - 1);
+					model.vertex_texcoords[texcoord_index] = parse_vector(line, sizeof("vt ") - 1);
+					texcoord_index++;
 					break;
 				}
 				case('n'): // line holds vertex normals
 				{
-					parse_vector(line, sizeof("vn ") - 1);
+					model.vertex_normals[normal_index] = parse_vector(line, sizeof("vn ") - 1);
+					normal_index++;
 					break;
 				}
 				}
@@ -257,7 +264,8 @@ void win32_read_obj(const char* filename)
 			}
 			case('f'): // face
 			{
-				parse_face(line);
+				model.faces[face_index] = parse_face(line);
+				face_index++;
 				break;
 			}
 			//case('m'):

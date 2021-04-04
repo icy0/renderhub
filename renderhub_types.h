@@ -17,13 +17,6 @@ typedef bool		bool8;
 typedef float		real32;
 typedef double		real64;
 
-struct OBJ_Face
-{
-	uint32 vertex_position_indices[3];
-	uint32 vertex_texcoords_indices[3];
-	uint32 vertex_normal_indices[3];
-};
-
 union ivec2
 {
 	struct
@@ -89,6 +82,24 @@ union fvec4
 		real32 w;
 	};
 	real32 coords[4];
+};
+
+struct OBJ_Face
+{
+	ivec3 vertices[3];
+};
+
+struct OBJ_Model
+{
+	uint32 vertex_positions_count;
+	uint32 vertex_texcoords_count;
+	uint32 vertex_normals_count;
+	uint32 face_count;
+
+	fvec3* vertex_positions;
+	fvec3* vertex_texcoords;
+	fvec3* vertex_normals;
+	OBJ_Face* faces;
 };
 
 struct Display_Properties

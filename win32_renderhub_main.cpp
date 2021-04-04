@@ -182,7 +182,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
 
     ShowWindow(hwnd, nCmdShow);
 
-    win32_read_obj("test_resources\\radiosity_room.obj");
+    win32_read_obj("test_resources\\case-with-money-low-poly\\source\\two-case-MONEY_triang-LP\\two-case-MONEY_triang-LP.obj");
 
     g_window_properties->window_handle = hwnd;
 
