@@ -1,6 +1,7 @@
 #include <d3d11.h>
 
 #include "renderhub_types.h"
+#include "win32_renderhub_globals.h"
 
 void win32_get_display_devices()
 {
@@ -43,29 +44,26 @@ void win32_get_display_devices()
 	}
 }
 
-void win32_get_current_display_device(Display_Properties* display_properties)
+void win32_get_current_display_device()
 {
-	DEVMODE device_graphics_mode;
+	DEVMODE device_graphics_mode = {};
 	EnumDisplaySettings(NULL, ENUM_CURRENT_SETTINGS, &device_graphics_mode);
 
-	display_properties->horizontal_pixel_count = device_graphics_mode.dmPelsWidth;
-	display_properties->vertical_pixel_count = device_graphics_mode.dmPelsHeight;
-	display_properties->refresh_rate = device_graphics_mode.dmDisplayFrequency;
+
+	g_display_properties->horizontal_pixel_count = device_graphics_mode.dmPelsWidth;
+	g_display_properties->vertical_pixel_count = device_graphics_mode.dmPelsHeight;
+	g_display_properties->refresh_rate = device_graphics_mode.dmDisplayFrequency;
 }
 
-void init_directx11(Display_Properties* display_properties, 
-	Window_Properties* window_properties, 
-	IDXGISwapChain* swap_chain, 
-	ID3D11Device* device, 
-	ID3D11DeviceContext* device_context)
+void win32_init_directx11()
 {
 	HRESULT result;
 
 	DXGI_MODE_DESC back_buffer_display_mode;
 	ZeroMemory(&back_buffer_display_mode, sizeof(back_buffer_display_mode));
-	back_buffer_display_mode.Width = window_properties->window_width;
-	back_buffer_display_mode.Height = window_properties->window_height;
-	back_buffer_display_mode.RefreshRate.Numerator = display_properties->refresh_rate;
+	back_buffer_display_mode.Width = g_window_properties->window_width;
+	back_buffer_display_mode.Height = g_window_properties->window_height;
+	back_buffer_display_mode.RefreshRate.Numerator = g_display_properties->refresh_rate;
 	back_buffer_display_mode.RefreshRate.Denominator = 1;
 	back_buffer_display_mode.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
 	back_buffer_display_mode.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
@@ -78,7 +76,7 @@ void init_directx11(Display_Properties* display_properties,
 	swap_chain_description.SampleDesc.Quality = 0;
 	swap_chain_description.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
 	swap_chain_description.BufferCount = 1; // TODO not 2?
-	swap_chain_description.OutputWindow = window_properties->window_handle;
+	swap_chain_description.OutputWindow = g_window_properties->window_handle;
 	swap_chain_description.Windowed = true;
 	swap_chain_description.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
 	swap_chain_description.Flags = 0;
@@ -107,10 +105,10 @@ void init_directx11(Display_Properties* display_properties,
 		ARRAYSIZE(feature_levels),
 		D3D11_SDK_VERSION, 
 		&swap_chain_description, 
-		&swap_chain, 
-		&device, 
+		&g_swap_chain,
+		&g_device,
 		NULL, 
-		&device_context);
+		&g_device_context);
 
 	if (FAILED(result))
 	{

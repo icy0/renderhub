@@ -27,6 +27,12 @@
     <ClCompile Include="dx11_win32_renderhub_renderer.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
+    <ClCompile Include="win32_renderhub_logging.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="win32_renderhub_window_settings.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="renderhub_types.h">
@@ -39,6 +45,21 @@
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="dx11_win32_renderhub_renderer.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="renderhub_testing_utilities.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="win32_renderhub_logging.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="renderhub_logging.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="win32_renderhub_window_settings.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="win32_renderhub_globals.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
   </ItemGroup>

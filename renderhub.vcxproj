@@ -173,13 +173,20 @@
     <ClCompile Include="dx11_win32_renderhub_renderer.cpp" />
     <ClCompile Include="renderhub_input.cpp" />
     <ClCompile Include="renderhub_resourceloader.cpp" />
+    <ClCompile Include="win32_renderhub_logging.cpp" />
     <ClCompile Include="win32_renderhub_main.cpp" />
+    <ClCompile Include="win32_renderhub_window_settings.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="dx11_win32_renderhub_renderer.h" />
     <ClInclude Include="renderhub_input.h" />
+    <ClInclude Include="renderhub_logging.h" />
     <ClInclude Include="renderhub_resourceloader.h" />
+    <ClInclude Include="renderhub_testing_utilities.h" />
     <ClInclude Include="renderhub_types.h" />
+    <ClInclude Include="win32_renderhub_globals.h" />
+    <ClInclude Include="win32_renderhub_logging.h" />
+    <ClInclude Include="win32_renderhub_window_settings.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
