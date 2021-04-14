@@ -3,8 +3,9 @@
 
 #include "renderhub_types.h"
 #include "renderhub_input.h"
-#include "renderhub_resourceloader.h"
+#include "win32_renderhub_resourceloader.h"
 #include "renderhub_logging.h"
+#include "renderhub_assert.h"
 
 #include "win32_renderhub_window_settings.h"
 #include "dx11_win32_renderhub_renderer.h"
@@ -26,10 +27,9 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
     ZeroMemory(g_display_properties, sizeof(Display_Properties));
     ZeroMemory(g_window_properties, sizeof(Window_Properties));
 
+    win32_get_current_display_device();
     g_window_properties->window_width = g_display_properties->horizontal_pixel_count;
     g_window_properties->window_height = g_display_properties->vertical_pixel_count;
-
-    win32_get_current_display_device();
 
     win32_setup_console_io();
 
@@ -51,7 +51,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
 
     ShowWindow(hwnd, nCmdShow);
 
-    //win32_read_obj("test_resources\\case-with-money-low-poly\\source\\two-case-MONEY_triang-LP\\two-case-MONEY_triang-LP.obj");
+    win32_read_obj("test_resources\\radiosity_room.obj");
 
     g_window_properties->window_handle = hwnd;
 
@@ -65,31 +65,39 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
     LARGE_INTEGER prev_frametime;
     QueryPerformanceCounter(&prev_frametime);
 
-     double fps;
-     char fps_print_buffer[256];
+    double fps;
+    char fps_print_buffer[256];
 
     LARGE_INTEGER delta_time;
     LARGE_INTEGER curr_frametime;
 
+    uint64 prev_cycle_count = __rdtsc();
+    uint64 delta_cycle_count;
+    uint64 curr_cycle_count;
+
     while (msg.message != WM_QUIT)
     {
-        if(PeekMessage(&msg, 0, 0, 0, PM_REMOVE))
+        if(PeekMessageA(&msg, 0, 0, 0, PM_REMOVE))
         {
             TranslateMessage(&msg);
-            DispatchMessage(&msg);
+            DispatchMessageA(&msg);
         }
         else
         {
+            curr_cycle_count = __rdtsc();
+            delta_cycle_count = curr_cycle_count - prev_cycle_count;
+            prev_cycle_count = curr_cycle_count;
+
             QueryPerformanceCounter(&curr_frametime);
-            delta_time.QuadPart = (curr_frametime.QuadPart - prev_frametime.QuadPart);
+            delta_time.QuadPart = curr_frametime.QuadPart - prev_frametime.QuadPart;
             delta_time.QuadPart *= 1'000'000;
             delta_time.QuadPart /= performance_frequency.QuadPart;
 
             fps = 1.0 / (delta_time.QuadPart / 1'000'000.0f);
             prev_frametime.QuadPart = curr_frametime.QuadPart;
 
-             sprintf_s(fps_print_buffer, "FPS: %.5f", fps);
-             rh_log_message(fps_print_buffer);
+            sprintf_s(fps_print_buffer, "FPS: %.5f, CPU-Cycles / Frame: %lld", fps, delta_cycle_count);
+            rh_log_message(fps_print_buffer);
 
             // TODO call DLL function update(delta_time);
             // TODO call DLL function render();
