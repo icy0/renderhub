@@ -10,7 +10,18 @@ void win32_on_size(HWND hwnd, UINT flag, int width, int height)
     g_window_properties->window_width = width;
     g_window_properties->window_height = height;
 
-    // TODO reinitialize directx
+    if (g_swap_chain)
+    {
+        g_device_context->OMSetRenderTargets(0, 0, 0);
+
+        // TODO(paul): release outstanding reference(s) to swapchain buffers
+        // TODO(paul): preserve existing buffer count and format
+        // TODO(paul): swapchain.ResizeBuffers()
+        // TODO(paul): create new render target view
+        // TODO(paul): set output merger render target
+        // TODO(paul):
+
+    }
 }
 
 LRESULT CALLBACK win32_callback_procedure(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)

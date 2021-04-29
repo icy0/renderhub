@@ -1,6 +1,8 @@
 #pragma once
 #include <Windows.h>
 #include <stdint.h>
+#include <d3d11.h>
+#include <directxmath.h>
 
 typedef int8_t		int8;
 typedef int16_t		int16;
@@ -84,6 +86,13 @@ union fvec4
 	real32 coords[4];
 };
 
+struct vertex
+{
+	fvec3 position;
+	fvec2 texcoords;
+	fvec3 normal;
+};
+
 struct OBJ_Face
 {
 	ivec3 vertices[3];
@@ -91,15 +100,34 @@ struct OBJ_Face
 
 struct OBJ_Model
 {
-	uint32 vertex_positions_count;
-	uint32 vertex_texcoords_count;
-	uint32 vertex_normals_count;
-	uint32 face_count;
+	enum
+	{
+		MTLLIB_PRESENT = 1,
+	};
+	uint64 vertex_positions_count;
+	uint64 vertex_texcoords_count;
+	uint64 vertex_normals_count;
+	uint64 face_count;
 
 	fvec3* vertex_positions;
 	fvec3* vertex_texcoords;
 	fvec3* vertex_normals;
 	OBJ_Face* faces;
+	uint32 flags;
+};
+
+struct Mesh
+{
+	enum
+	{
+		TRIANGULATED = 1,
+		BACKFACE_CULLING = 2,
+		TRIANGLE_LIST = 4,
+		TRIANGLE_STRIP = 8,
+	};
+	uint32 vertex_count;
+	vertex* vertices;
+	uint32 flags;
 };
 
 struct Display_Properties

@@ -1,12 +1,14 @@
 #include <d3d11.h>
+#include <directxmath.h>
 
 #include "renderhub_types.h"
+#include "renderhub_assert.h"
 #include "win32_renderhub_globals.h"
 
 void win32_get_display_devices()
 {
 	int32 device_count = 0;
-	DISPLAY_DEVICE dummy_display_device;
+	DISPLAY_DEVICE dummy_display_device = {};
 	while (EnumDisplayDevices(NULL, device_count, &dummy_display_device, EDD_GET_DEVICE_INTERFACE_NAME))
 	{
 		device_count++;
@@ -48,7 +50,6 @@ void win32_get_current_display_device()
 {
 	DEVMODE device_graphics_mode = {};
 	EnumDisplaySettings(NULL, ENUM_CURRENT_SETTINGS, &device_graphics_mode);
-
 
 	g_display_properties->horizontal_pixel_count = device_graphics_mode.dmPelsWidth;
 	g_display_properties->vertical_pixel_count = device_graphics_mode.dmPelsHeight;
@@ -110,8 +111,34 @@ void win32_init_directx11()
 		NULL, 
 		&g_device_context);
 
-	if (FAILED(result))
-	{
-		OutputDebugStringA("Device / Swapchain creation has failed.");
-	}
+	rh_assert(SUCCEEDED(result));
+
+	ID3D11Texture2D* back_buffer;
+	result = g_swap_chain->GetBuffer(0, __uuidof(ID3D11Texture2D), (void**) &back_buffer);
+	rh_assert(SUCCEEDED(result));
+
+	ID3D11RenderTargetView* render_target_view;
+	g_device->CreateRenderTargetView(back_buffer, nullptr, &render_target_view);
+
+	back_buffer->Release();
+
+	D3D11_TEXTURE2D_DESC depth_stencil_buffer_description;
+	ZeroMemory(&depth_stencil_buffer_description, sizeof(D3D11_TEXTURE2D_DESC));
+
+	depth_stencil_buffer_description.ArraySize = 1;
+	depth_stencil_buffer_description.BindFlags |= D3D11_BIND_DEPTH_STENCIL;
+	depth_stencil_buffer_description.CPUAccessFlags = 0;
+	depth_stencil_buffer_description.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+	depth_stencil_buffer_description.Width = g_window_properties->window_width;
+	depth_stencil_buffer_description.Height = g_window_properties->window_height;
+	depth_stencil_buffer_description.MipLevels = 1;
+	depth_stencil_buffer_description.SampleDesc.Count = 1;
+	depth_stencil_buffer_description.SampleDesc.Quality = 0;
+	depth_stencil_buffer_description.Usage = D3D11_USAGE_DEFAULT;
+
+	ID3D11Texture2D* depth_stencil_buffer;
+	result = g_device->CreateTexture2D(&depth_stencil_buffer_description, nullptr, &depth_stencil_buffer);
+	rh_assert(SUCCEEDED(result));
+
+ 
 }

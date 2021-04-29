@@ -13,3 +13,5 @@ extern Display_Properties* g_display_properties;
 extern IDXGISwapChain* g_swap_chain;
 extern ID3D11Device* g_device;
 extern ID3D11DeviceContext* g_device_context;
+extern IDXGIFactory* g_gi_factory;
+extern IDXGIAdapter** g_dxgi_adapters;

@@ -3,10 +3,11 @@
 
 #include "renderhub_types.h"
 #include "renderhub_input.h"
-#include "win32_renderhub_resourceloader.h"
 #include "renderhub_logging.h"
 #include "renderhub_assert.h"
+#include "renderhub_resourceloader.h"
 
+#include "win32_renderhub_resourceloader.h"
 #include "win32_renderhub_window_settings.h"
 #include "dx11_win32_renderhub_renderer.h"
 
@@ -22,6 +23,11 @@ ID3D11DeviceContext* g_device_context = nullptr;
 
 int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine, int nCmdShow)
 {
+    rh_assert(g_keyboard_key_states);
+    rh_assert(g_mouse_state);
+    rh_assert(g_display_properties);
+    rh_assert(g_window_properties);
+
     ZeroMemory(g_keyboard_key_states, sizeof(uint8) * 256);
     ZeroMemory(g_mouse_state, sizeof(Mouse_State));
     ZeroMemory(g_display_properties, sizeof(Display_Properties));
@@ -40,18 +46,17 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
     wc.hInstance = hInstance;
     wc.lpszClassName = CLASS_NAME;
 
-    RegisterClass(&wc);
+    rh_assert(RegisterClass(&wc));
 
     HWND hwnd = CreateWindowEx(0, CLASS_NAME, L"RenderHub", WS_OVERLAPPEDWINDOW, 
         1520, 0, 1920, 1080, NULL, NULL, hInstance, NULL);
-    if (hwnd == NULL)
-    {
-        return 0;
-    }
+    rh_assert(hwnd);
 
     ShowWindow(hwnd, nCmdShow);
 
-    win32_read_obj("test_resources\\radiosity_room.obj");
+    OBJ_Model* obj_dummy_sphere;
+    rh_log_timing(obj_dummy_sphere = win32_read_obj("test_resources\\dummy_sphere.obj"));
+    Mesh* mesh_dummy_sphere = convert_to_mesh(obj_dummy_sphere);
 
     g_window_properties->window_handle = hwnd;
 
@@ -96,8 +101,8 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
             fps = 1.0 / (delta_time.QuadPart / 1'000'000.0f);
             prev_frametime.QuadPart = curr_frametime.QuadPart;
 
-            sprintf_s(fps_print_buffer, "FPS: %.5f, CPU-Cycles / Frame: %lld", fps, delta_cycle_count);
-            rh_log_message(fps_print_buffer);
+            // sprintf_s(fps_print_buffer, "FPS: %.5f, CPU-Cycles / Frame: %lld", fps, delta_cycle_count);
+            // rh_log_message(fps_print_buffer);
 
             // TODO call DLL function update(delta_time);
             // TODO call DLL function render();

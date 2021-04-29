@@ -33,6 +33,9 @@
     <ClCompile Include="win32_renderhub_resourceloader.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
+    <ClCompile Include="renderhub_resourceloader.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="renderhub_types.h">
@@ -63,6 +66,9 @@
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="win32_renderhub_resourceloader.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="renderhub_resourceloader.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
   </ItemGroup>
