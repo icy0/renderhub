@@ -1,8 +1,10 @@
 #include <d3d11.h>
 #include <directxmath.h>
+#include <dxgidebug.h>
 
 #include "renderhub_types.h"
 #include "renderhub_assert.h"
+#include "renderhub_logging.h"
 #include "win32_renderhub_globals.h"
 
 void win32_get_display_devices()
@@ -60,7 +62,17 @@ void win32_init_directx11()
 {
 	HRESULT result;
 
-	DXGI_MODE_DESC back_buffer_display_mode;
+	typedef HRESULT(WINAPI* DXGIGetDebugInterface_Type)(REFIID, void**);
+	HMODULE dxgi_debug_dll = LoadLibraryEx(L"Dxgidebug.dll", nullptr, LOAD_LIBRARY_SEARCH_SYSTEM32);
+	// HMODULE dxgi_debug_dll = GetModuleHandle(L"dxgidebug.dll");
+	rh_assert(dxgi_debug_dll);
+	DXGIGetDebugInterface_Type DXGIGetDebugInterface = 
+		(DXGIGetDebugInterface_Type)((void*)GetProcAddress(dxgi_debug_dll, "DXGIGetDebugInterface"));
+	rh_assert(DXGIGetDebugInterface);
+	result = DXGIGetDebugInterface(__uuidof(IDXGIInfoQueue), reinterpret_cast<void**>(&g_info_queue));
+	rh_assert(SUCCEEDED(result));
+
+	DXGI_MODE_DESC back_buffer_display_mode = {};
 	ZeroMemory(&back_buffer_display_mode, sizeof(back_buffer_display_mode));
 	back_buffer_display_mode.Width = g_window_properties->window_width;
 	back_buffer_display_mode.Height = g_window_properties->window_height;
@@ -76,10 +88,10 @@ void win32_init_directx11()
 	swap_chain_description.SampleDesc.Count = 1;
 	swap_chain_description.SampleDesc.Quality = 0;
 	swap_chain_description.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
-	swap_chain_description.BufferCount = 1; // TODO not 2?
+	swap_chain_description.BufferCount = 2;
 	swap_chain_description.OutputWindow = g_window_properties->window_handle;
 	swap_chain_description.Windowed = true;
-	swap_chain_description.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
+	swap_chain_description.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
 	swap_chain_description.Flags = 0;
 
 	uint32 device_creation_flags = 0;
@@ -98,10 +110,10 @@ void win32_init_directx11()
 		D3D_FEATURE_LEVEL_9_1
 	};
 
-	result = D3D11CreateDeviceAndSwapChain(NULL, 
+	rh_dx_logging(result = D3D11CreateDeviceAndSwapChain(NULL, 
 		D3D_DRIVER_TYPE_HARDWARE, 
 		NULL, 
-		device_creation_flags, 
+		device_creation_flags,
 		feature_levels,
 		ARRAYSIZE(feature_levels),
 		D3D11_SDK_VERSION, 
@@ -109,18 +121,17 @@ void win32_init_directx11()
 		&g_swap_chain,
 		&g_device,
 		NULL, 
-		&g_device_context);
+		&g_device_context));
 
 	rh_assert(SUCCEEDED(result));
 
-	ID3D11Texture2D* back_buffer;
-	result = g_swap_chain->GetBuffer(0, __uuidof(ID3D11Texture2D), (void**) &back_buffer);
+	ID3D11Texture2D* back_buffer = nullptr;
+	rh_dx_logging(result = g_swap_chain->GetBuffer(0, __uuidof(ID3D11Texture2D), (void**) &back_buffer));
 	rh_assert(SUCCEEDED(result));
 
-	ID3D11RenderTargetView* render_target_view;
-	g_device->CreateRenderTargetView(back_buffer, nullptr, &render_target_view);
+	rh_dx_logging(g_device->CreateRenderTargetView(back_buffer, nullptr, &g_render_target_view));
 
-	back_buffer->Release();
+	rh_dx_logging(back_buffer->Release());
 
 	D3D11_TEXTURE2D_DESC depth_stencil_buffer_description;
 	ZeroMemory(&depth_stencil_buffer_description, sizeof(D3D11_TEXTURE2D_DESC));
@@ -137,8 +148,20 @@ void win32_init_directx11()
 	depth_stencil_buffer_description.Usage = D3D11_USAGE_DEFAULT;
 
 	ID3D11Texture2D* depth_stencil_buffer;
-	result = g_device->CreateTexture2D(&depth_stencil_buffer_description, nullptr, &depth_stencil_buffer);
+	rh_dx_logging(result = g_device->CreateTexture2D(&depth_stencil_buffer_description, nullptr, &depth_stencil_buffer));
 	rh_assert(SUCCEEDED(result));
 
- 
+	rh_dx_logging(result = g_device->CreateDepthStencilView(depth_stencil_buffer, nullptr, &g_depth_stencil_view));
+	rh_assert(SUCCEEDED(result));
+
+	D3D11_DEPTH_STENCIL_DESC depth_stencil_state_description = {};
+	depth_stencil_state_description.DepthEnable = true;
+	depth_stencil_state_description.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
+	depth_stencil_state_description.DepthFunc = D3D11_COMPARISON_LESS;
+	depth_stencil_state_description.StencilEnable = false;
+
+	rh_dx_logging(result = g_device->CreateDepthStencilState(&depth_stencil_state_description, &g_depth_stencil_state));
+	rh_assert(SUCCEEDED(result));
+
+
 }

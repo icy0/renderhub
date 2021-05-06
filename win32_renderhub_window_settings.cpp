@@ -26,7 +26,6 @@ void win32_on_size(HWND hwnd, UINT flag, int width, int height)
 
 LRESULT CALLBACK win32_callback_procedure(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
-    char msg[256];
     switch (uMsg)
     {
     case WM_SIZE:

@@ -1,5 +1,8 @@
 #include <windows.h>
 #include <stdio.h>
+#include <intrin.h>
+#include <dxgidebug.h>
+#include <DirectXColors.h>
 
 #include "renderhub_types.h"
 #include "renderhub_input.h"
@@ -20,6 +23,12 @@ Window_Properties* g_window_properties = new Window_Properties();
 IDXGISwapChain* g_swap_chain = nullptr;
 ID3D11Device* g_device = nullptr;
 ID3D11DeviceContext* g_device_context = nullptr;
+
+ID3D11RenderTargetView* g_render_target_view = nullptr;
+ID3D11DepthStencilView* g_depth_stencil_view = nullptr;
+ID3D11DepthStencilState* g_depth_stencil_state = nullptr;
+
+struct IDXGIInfoQueue* g_info_queue = nullptr;
 
 int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine, int nCmdShow)
 {
@@ -49,14 +58,14 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
     rh_assert(RegisterClass(&wc));
 
     HWND hwnd = CreateWindowEx(0, CLASS_NAME, L"RenderHub", WS_OVERLAPPEDWINDOW, 
-        1520, 0, 1920, 1080, NULL, NULL, hInstance, NULL);
+        0, 0, 1920, 1080, NULL, NULL, hInstance, NULL);
     rh_assert(hwnd);
 
     ShowWindow(hwnd, nCmdShow);
 
-    OBJ_Model* obj_dummy_sphere;
-    rh_log_timing(obj_dummy_sphere = win32_read_obj("test_resources\\dummy_sphere.obj"));
-    Mesh* mesh_dummy_sphere = convert_to_mesh(obj_dummy_sphere);
+    //OBJ_Model* obj_dummy_sphere;
+    //rh_log_timing(obj_dummy_sphere = win32_read_obj("test_resources\\dummy_sphere.obj"));
+    //Mesh* mesh_dummy_sphere = convert_to_mesh(obj_dummy_sphere);
 
     g_window_properties->window_handle = hwnd;
 
@@ -105,6 +114,8 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
             // rh_log_message(fps_print_buffer);
 
             // TODO call DLL function update(delta_time);
+            float clear_color[] = { .5f, .5f, .5f, 1.0f };
+            g_device_context->ClearRenderTargetView(g_render_target_view, DirectX::Colors::CornflowerBlue);
             // TODO call DLL function render();
 
             // after update and render

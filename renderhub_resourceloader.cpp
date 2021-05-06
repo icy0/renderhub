@@ -12,7 +12,7 @@ Mesh* convert_to_mesh(OBJ_Model* model)
 	rh_assert(/*actual vertex count*/ (model->face_count * 3) <= 
 		/*max vertex count*/ ((uint64)1) << ((sizeof(mesh->vertex_count) * 8) - 1));
 
-	mesh->vertex_count = model->face_count * 3;
+	mesh->vertex_count = model->face_count * (uint64)3;
 	mesh->vertices = new vertex[mesh->vertex_count];
 	rh_assert(mesh->vertices);
 
@@ -20,7 +20,7 @@ Mesh* convert_to_mesh(OBJ_Model* model)
 	// I might demand every .obj for its faces to be triangulated, to be determined.
 	mesh->flags |= Mesh::TRIANGULATED | Mesh::BACKFACE_CULLING | Mesh::TRIANGLE_LIST;
 
-	int32 vertex_counter = 0;
+	uint32 vertex_counter = 0;
 	
 	// note(paul): This introduces duplicates.
 	for (int32 face_index = 0; face_index < model->face_count; face_index++)

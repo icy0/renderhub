@@ -4,7 +4,7 @@
 
 #include "win32_renderhub_logging.h"
 
-// TODO: add stubs for when NOT compiling on _WIN32
+// TODO(paul): add stubs for when NOT compiling on _WIN32
 
 #ifdef _WIN32
 
@@ -37,6 +37,34 @@
 		else { }\
 
 	#endif // ifndef rh_log_error
+
+	#ifndef rh_dx_logging
+	#define rh_dx_logging(dx_call)\
+		{\
+			if (g_info_queue)\
+			{\
+				g_info_queue->ClearStoredMessages(DXGI_DEBUG_ALL);\
+				(dx_call);\
+				uint64 message_count = g_info_queue->GetNumStoredMessages(DXGI_DEBUG_ALL);\
+				for (int i = 0; i < message_count; i++)\
+				{\
+					SIZE_T message_length = 0;\
+					HRESULT result = g_info_queue->GetMessage(DXGI_DEBUG_ALL, 0, NULL, &message_length);\
+					DXGI_INFO_QUEUE_MESSAGE* message = new DXGI_INFO_QUEUE_MESSAGE[message_length];\
+					result = g_info_queue->GetMessage(DXGI_DEBUG_ALL, 0, message, &message_length);\
+					rh_log_error(message->pDescription);\
+				}\
+				if(message_count > 0)\
+				{\
+					rh_assert(false);\
+				}\
+			}\
+			else\
+			{\
+				rh_log_warning("tried to log a directx call without an active IDXGIInfoQueue.");\
+			}\
+		}
+	#endif // ifndef rh_dx_logging
 
 	#ifdef _MSC_VER
 		#ifndef rh_log_timing
@@ -87,7 +115,7 @@
 		#ifndef rh_log_timing
 		#define rh_log_timing(macrodef_function_call) macrodef_function_call;
 		#endif // ifndef rh_log_timing
-	#endif // ifdef _MSV_VER
+#endif // ifdef _MSV_VER
 
 #else // else if _WIN32 (other OSes)
 

@@ -1,6 +1,7 @@
 #pragma once
 #include <windows.h>
 #include <d3d11.h>
+#include <dxgidebug.h>
 
 #include "renderhub_types.h"
 
@@ -15,3 +16,10 @@ extern ID3D11Device* g_device;
 extern ID3D11DeviceContext* g_device_context;
 extern IDXGIFactory* g_gi_factory;
 extern IDXGIAdapter** g_dxgi_adapters;
+
+extern ID3D11RenderTargetView* g_render_target_view;
+extern ID3D11DepthStencilView* g_depth_stencil_view;
+extern ID3D11DepthStencilState* g_depth_stencil_state;
+
+// DEBUG ONLY
+extern struct IDXGIInfoQueue* g_info_queue;
