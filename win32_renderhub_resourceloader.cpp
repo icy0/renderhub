@@ -129,7 +129,7 @@ OBJ_Model* win32_read_obj(const char* filename)
 	rh_assert(file_buffer);
 
 	DWORD bytes_read; // note(paul): necessary for function call, won't be used afterwards.
-	rh_assert(ReadFile(file_handle, file_buffer, file_size_in_bytes.QuadPart, &bytes_read, NULL));
+	rh_assert(ReadFile(file_handle, file_buffer, (DWORD)file_size_in_bytes.QuadPart, &bytes_read, NULL));
 
 	OBJ_Model* model = new OBJ_Model{};
 	rh_assert(model);

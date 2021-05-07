@@ -22,7 +22,7 @@ Mesh* convert_to_mesh(OBJ_Model* model)
 
 	uint32 vertex_counter = 0;
 	
-	// note(paul): This introduces duplicates.
+	// note(paul): This introduces duplicates (triangle list).
 	for (int32 face_index = 0; face_index < model->face_count; face_index++)
 	{
 		for (int32 vertex_of_face_index = 0; vertex_of_face_index < 3; vertex_of_face_index++)
@@ -30,10 +30,10 @@ Mesh* convert_to_mesh(OBJ_Model* model)
 			ivec3 indices = model->faces[face_index].vertices[vertex_of_face_index];
 
 			mesh->vertices[vertex_counter].position = model->vertex_positions[indices.x];
-			mesh->vertices[vertex_counter].texcoords = { model->vertex_positions[indices.y].x, model->vertex_positions[indices.y].y };
-			mesh->vertices[vertex_counter].normal = model->vertex_positions[indices.z];
+			mesh->vertices[vertex_counter].texcoords = { model->vertex_texcoords[indices.y].x, model->vertex_texcoords[indices.y].y };
+			mesh->vertices[vertex_counter].normal = model->vertex_normals[indices.z];
 			vertex_counter++;
-			rh_assert(vertex_counter < mesh->vertex_count);
+			rh_assert(vertex_counter <= mesh->vertex_count);
 		}
 	}
 

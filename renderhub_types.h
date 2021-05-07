@@ -125,7 +125,7 @@ struct Mesh
 		TRIANGLE_LIST = 4,
 		TRIANGLE_STRIP = 8,
 	};
-	uint32 vertex_count;
+	uint64 vertex_count;
 	vertex* vertices;
 	uint32 flags;
 };

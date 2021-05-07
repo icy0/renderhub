@@ -27,6 +27,8 @@ ID3D11DeviceContext* g_device_context = nullptr;
 ID3D11RenderTargetView* g_render_target_view = nullptr;
 ID3D11DepthStencilView* g_depth_stencil_view = nullptr;
 ID3D11DepthStencilState* g_depth_stencil_state = nullptr;
+ID3D11RasterizerState* g_rasterizer_state = nullptr;
+D3D11_VIEWPORT* g_viewport = new D3D11_VIEWPORT{0};
 
 struct IDXGIInfoQueue* g_info_queue = nullptr;
 
@@ -41,6 +43,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
     ZeroMemory(g_mouse_state, sizeof(Mouse_State));
     ZeroMemory(g_display_properties, sizeof(Display_Properties));
     ZeroMemory(g_window_properties, sizeof(Window_Properties));
+    ZeroMemory(g_viewport, sizeof(D3D11_VIEWPORT));
 
     win32_get_current_display_device();
     g_window_properties->window_width = g_display_properties->horizontal_pixel_count;
@@ -63,9 +66,9 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
 
     ShowWindow(hwnd, nCmdShow);
 
-    //OBJ_Model* obj_dummy_sphere;
-    //rh_log_timing(obj_dummy_sphere = win32_read_obj("test_resources\\dummy_sphere.obj"));
-    //Mesh* mesh_dummy_sphere = convert_to_mesh(obj_dummy_sphere);
+    OBJ_Model* obj_dummy_sphere = nullptr;
+    rh_log_timing(obj_dummy_sphere = win32_read_obj("test_resources\\dummy_sphere.obj"));
+    Mesh* mesh_dummy_sphere = convert_to_mesh(obj_dummy_sphere);
 
     g_window_properties->window_handle = hwnd;
 
@@ -80,7 +83,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
     QueryPerformanceCounter(&prev_frametime);
 
     double fps;
-    char fps_print_buffer[256];
+    //char fps_print_buffer[256];
 
     LARGE_INTEGER delta_time;
     LARGE_INTEGER curr_frametime;
@@ -116,6 +119,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
             // TODO call DLL function update(delta_time);
             float clear_color[] = { .5f, .5f, .5f, 1.0f };
             g_device_context->ClearRenderTargetView(g_render_target_view, DirectX::Colors::CornflowerBlue);
+            g_swap_chain->Present(0, 0);
             // TODO call DLL function render();
 
             // after update and render

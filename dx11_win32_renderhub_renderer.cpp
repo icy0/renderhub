@@ -72,7 +72,7 @@ void win32_init_directx11()
 	result = DXGIGetDebugInterface(__uuidof(IDXGIInfoQueue), reinterpret_cast<void**>(&g_info_queue));
 	rh_assert(SUCCEEDED(result));
 
-	DXGI_MODE_DESC back_buffer_display_mode = {};
+	DXGI_MODE_DESC back_buffer_display_mode;
 	ZeroMemory(&back_buffer_display_mode, sizeof(back_buffer_display_mode));
 	back_buffer_display_mode.Width = g_window_properties->window_width;
 	back_buffer_display_mode.Height = g_window_properties->window_height;
@@ -122,16 +122,22 @@ void win32_init_directx11()
 		&g_device,
 		NULL, 
 		&g_device_context));
-
 	rh_assert(SUCCEEDED(result));
+	rh_assert(g_swap_chain);
+	rh_assert(g_device);
+	rh_assert(g_device_context);
 
 	ID3D11Texture2D* back_buffer = nullptr;
 	rh_dx_logging(result = g_swap_chain->GetBuffer(0, __uuidof(ID3D11Texture2D), (void**) &back_buffer));
 	rh_assert(SUCCEEDED(result));
 
-	rh_dx_logging(g_device->CreateRenderTargetView(back_buffer, nullptr, &g_render_target_view));
+	rh_dx_logging(result = g_device->CreateRenderTargetView(back_buffer, nullptr, &g_render_target_view));
+	rh_assert(SUCCEEDED(result));
+	rh_assert(g_render_target_view);
 
 	rh_dx_logging(back_buffer->Release());
+	back_buffer = nullptr;
+	rh_assert(!back_buffer);
 
 	D3D11_TEXTURE2D_DESC depth_stencil_buffer_description;
 	ZeroMemory(&depth_stencil_buffer_description, sizeof(D3D11_TEXTURE2D_DESC));
@@ -147,12 +153,18 @@ void win32_init_directx11()
 	depth_stencil_buffer_description.SampleDesc.Quality = 0;
 	depth_stencil_buffer_description.Usage = D3D11_USAGE_DEFAULT;
 
-	ID3D11Texture2D* depth_stencil_buffer;
+	ID3D11Texture2D* depth_stencil_buffer = nullptr;
 	rh_dx_logging(result = g_device->CreateTexture2D(&depth_stencil_buffer_description, nullptr, &depth_stencil_buffer));
 	rh_assert(SUCCEEDED(result));
+	rh_assert(depth_stencil_buffer);
 
 	rh_dx_logging(result = g_device->CreateDepthStencilView(depth_stencil_buffer, nullptr, &g_depth_stencil_view));
 	rh_assert(SUCCEEDED(result));
+	rh_assert(g_depth_stencil_view);
+
+	rh_dx_logging(depth_stencil_buffer->Release());
+	depth_stencil_buffer = nullptr;
+	rh_assert(!depth_stencil_buffer);
 
 	D3D11_DEPTH_STENCIL_DESC depth_stencil_state_description = {};
 	depth_stencil_state_description.DepthEnable = true;
@@ -162,6 +174,30 @@ void win32_init_directx11()
 
 	rh_dx_logging(result = g_device->CreateDepthStencilState(&depth_stencil_state_description, &g_depth_stencil_state));
 	rh_assert(SUCCEEDED(result));
+	rh_assert(g_depth_stencil_state);
 
+	D3D11_RASTERIZER_DESC rasterizer_state_description = {};
+	rasterizer_state_description.FillMode = D3D11_FILL_SOLID;
+	rasterizer_state_description.CullMode = D3D11_CULL_BACK;
+	rasterizer_state_description.FrontCounterClockwise = false;
+	rasterizer_state_description.DepthBias = 0;
+	rasterizer_state_description.DepthBiasClamp = 0.0f;
+	rasterizer_state_description.SlopeScaledDepthBias = 0.0f;
+	rasterizer_state_description.DepthClipEnable = true;
+	rasterizer_state_description.ScissorEnable = false;
+	rasterizer_state_description.MultisampleEnable = false;
+	rasterizer_state_description.AntialiasedLineEnable = false;
 
+	rh_dx_logging(result = g_device->CreateRasterizerState(&rasterizer_state_description, &g_rasterizer_state));
+	rh_assert(SUCCEEDED(result));
+	rh_assert(g_rasterizer_state);
+
+	g_viewport->Width = (FLOAT) g_window_properties->window_width;
+	g_viewport->Height = (FLOAT) g_window_properties->window_height;
+	g_viewport->TopLeftX = 0.0f;
+	g_viewport->TopLeftY = 0.0f;
+	g_viewport->MinDepth = 0.0f;
+	g_viewport->MaxDepth = 1.0f;
+
+	rh_dx_logging(g_device_context->RSSetViewports(1, g_viewport));
 }

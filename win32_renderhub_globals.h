@@ -20,6 +20,8 @@ extern IDXGIAdapter** g_dxgi_adapters;
 extern ID3D11RenderTargetView* g_render_target_view;
 extern ID3D11DepthStencilView* g_depth_stencil_view;
 extern ID3D11DepthStencilState* g_depth_stencil_state;
+extern ID3D11RasterizerState* g_rasterizer_state;
+extern D3D11_VIEWPORT* g_viewport;
 
 // DEBUG ONLY
 extern struct IDXGIInfoQueue* g_info_queue;
