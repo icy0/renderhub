@@ -6,6 +6,8 @@
 
 // TODO(paul): add stubs for when NOT compiling on _WIN32
 
+
+#ifdef _DEBUG
 #ifdef _WIN32
 
 	#ifndef rh_log_message
@@ -124,3 +126,6 @@
 	#endif
 
 #endif // ifdef _WIN32
+#else // else ifdef _DEBUG 
+	// TODO(paul): insert stubs for the macros here.
+#endif // ifdef _DEBUG

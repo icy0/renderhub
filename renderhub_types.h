@@ -116,6 +116,17 @@ struct OBJ_Model
 	uint32 flags;
 };
 
+struct World
+{
+	Entity* entities;
+	uint64 entity_count;
+};
+
+struct Entity
+{
+	Mesh* mesh;
+};
+
 struct Mesh
 {
 	enum

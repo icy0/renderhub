@@ -25,3 +25,4 @@ extern D3D11_VIEWPORT* g_viewport;
 
 // DEBUG ONLY
 extern struct IDXGIInfoQueue* g_info_queue;
+extern World* g_world;

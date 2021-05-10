@@ -1,6 +1,10 @@
 #include <d3d11.h>
 #include <directxmath.h>
+#include <DirectXColors.h>
+
+#ifdef _DEBUG
 #include <dxgidebug.h>
+#endif
 
 #include "renderhub_types.h"
 #include "renderhub_assert.h"
@@ -62,6 +66,7 @@ void win32_init_directx11()
 {
 	HRESULT result;
 
+#ifdef _DEBUG
 	typedef HRESULT(WINAPI* DXGIGetDebugInterface_Type)(REFIID, void**);
 	HMODULE dxgi_debug_dll = LoadLibraryEx(L"Dxgidebug.dll", nullptr, LOAD_LIBRARY_SEARCH_SYSTEM32);
 	// HMODULE dxgi_debug_dll = GetModuleHandle(L"dxgidebug.dll");
@@ -71,6 +76,7 @@ void win32_init_directx11()
 	rh_assert(DXGIGetDebugInterface);
 	result = DXGIGetDebugInterface(__uuidof(IDXGIInfoQueue), reinterpret_cast<void**>(&g_info_queue));
 	rh_assert(SUCCEEDED(result));
+#endif
 
 	DXGI_MODE_DESC back_buffer_display_mode;
 	ZeroMemory(&back_buffer_display_mode, sizeof(back_buffer_display_mode));
@@ -200,4 +206,17 @@ void win32_init_directx11()
 	g_viewport->MaxDepth = 1.0f;
 
 	rh_dx_logging(g_device_context->RSSetViewports(1, g_viewport));
+}
+
+void dx11_win32_update(uint64 delta_time)
+{
+
+}
+
+void dx11_win32_render()
+{
+	rh_dx_logging(g_device_context->ClearRenderTargetView(g_render_target_view, DirectX::Colors::CornflowerBlue));
+	rh_dx_logging(g_device_context->ClearDepthStencilView(g_depth_stencil_view, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 0.0f, 0));
+	render_world();
+	rh_dx_logging(g_swap_chain->Present(0, 0));
 }

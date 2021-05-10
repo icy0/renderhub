@@ -2,7 +2,6 @@
 #include <stdio.h>
 #include <intrin.h>
 #include <dxgidebug.h>
-#include <DirectXColors.h>
 
 #include "renderhub_types.h"
 #include "renderhub_input.h"
@@ -32,6 +31,8 @@ D3D11_VIEWPORT* g_viewport = new D3D11_VIEWPORT{0};
 
 struct IDXGIInfoQueue* g_info_queue = nullptr;
 
+World* g_world;
+
 int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine, int nCmdShow)
 {
     rh_assert(g_keyboard_key_states);
@@ -44,6 +45,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
     ZeroMemory(g_display_properties, sizeof(Display_Properties));
     ZeroMemory(g_window_properties, sizeof(Window_Properties));
     ZeroMemory(g_viewport, sizeof(D3D11_VIEWPORT));
+    ZeroMemory(g_world, sizeof(World));
 
     win32_get_current_display_device();
     g_window_properties->window_width = g_display_properties->horizontal_pixel_count;
@@ -66,9 +68,12 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
 
     ShowWindow(hwnd, nCmdShow);
 
-    OBJ_Model* obj_dummy_sphere = nullptr;
-    rh_log_timing(obj_dummy_sphere = win32_read_obj("test_resources\\dummy_sphere.obj"));
-    Mesh* mesh_dummy_sphere = convert_to_mesh(obj_dummy_sphere);
+    // OBJ_Model* obj_dummy_sphere = nullptr;
+    // rh_log_timing(obj_dummy_sphere = win32_read_obj("test_resources\\dummy_sphere.obj"));
+    // rh_assert(obj_dummy_sphere);
+
+    // Mesh* mesh_dummy_sphere = convert_to_mesh(obj_dummy_sphere);
+    // rh_assert(mesh_dummy_sphere);
 
     g_window_properties->window_handle = hwnd;
 
@@ -82,15 +87,15 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
     LARGE_INTEGER prev_frametime;
     QueryPerformanceCounter(&prev_frametime);
 
-    double fps;
-    //char fps_print_buffer[256];
+    double fps = 0.0;
+    // char fps_print_buffer[256];
 
-    LARGE_INTEGER delta_time;
-    LARGE_INTEGER curr_frametime;
+    LARGE_INTEGER delta_time = {};
+    LARGE_INTEGER curr_frametime = {};
 
     uint64 prev_cycle_count = __rdtsc();
-    uint64 delta_cycle_count;
-    uint64 curr_cycle_count;
+    uint64 delta_cycle_count = 0;
+    uint64 curr_cycle_count = 0;
 
     while (msg.message != WM_QUIT)
     {
@@ -101,6 +106,12 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
         }
         else
         {
+            dx11_win32_update(delta_time.QuadPart);
+            dx11_win32_render();
+
+            // sprintf_s(fps_print_buffer, "FPS: %.5f, CPU-Cycles / Frame: %lld", fps, delta_cycle_count);
+            // rh_log_message(fps_print_buffer);
+
             curr_cycle_count = __rdtsc();
             delta_cycle_count = curr_cycle_count - prev_cycle_count;
             prev_cycle_count = curr_cycle_count;
@@ -112,15 +123,6 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
 
             fps = 1.0 / (delta_time.QuadPart / 1'000'000.0f);
             prev_frametime.QuadPart = curr_frametime.QuadPart;
-
-            // sprintf_s(fps_print_buffer, "FPS: %.5f, CPU-Cycles / Frame: %lld", fps, delta_cycle_count);
-            // rh_log_message(fps_print_buffer);
-
-            // TODO call DLL function update(delta_time);
-            float clear_color[] = { .5f, .5f, .5f, 1.0f };
-            g_device_context->ClearRenderTargetView(g_render_target_view, DirectX::Colors::CornflowerBlue);
-            g_swap_chain->Present(0, 0);
-            // TODO call DLL function render();
 
             // after update and render
             update_keyboard_input(g_keyboard_key_states);
