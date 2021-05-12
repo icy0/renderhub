@@ -73,23 +73,27 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>$(ProjectDir)debug_x86_binaries\</OutDir>
-    <IntDir>$(ProjectDir)debug_x86_intermediates\</IntDir>
+    <OutDir>output\$(Configuration)_$(PlatformShortName)_binaries\</OutDir>
+    <IntDir>output\$(Configuration)_$(PlatformShortName)_intermediates\</IntDir>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(ProjectDir)include\</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>$(ProjectDir)release_x86_binaries\</OutDir>
-    <IntDir>$(ProjectDir)release_x86_intermediates\</IntDir>
+    <OutDir>output\$(Configuration)_$(PlatformShortName)_binaries\</OutDir>
+    <IntDir>output\$(Configuration)_$(PlatformShortName)_intermediates\</IntDir>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(ProjectDir)include\</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>$(ProjectDir)debug_x64_binaries\</OutDir>
-    <IntDir>$(ProjectDir)debug_x64_intermediates\</IntDir>
+    <OutDir>output\$(Configuration)_$(PlatformShortName)_binaries\</OutDir>
+    <IntDir>output\$(Configuration)_$(PlatformShortName)_intermediates\</IntDir>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(ProjectDir)include\</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>$(ProjectDir)release_x64_binaries\</OutDir>
-    <IntDir>$(ProjectDir)release_x64_intermediates\</IntDir>
+    <OutDir>output\$(Configuration)_$(PlatformShortName)_binaries\</OutDir>
+    <IntDir>output\$(Configuration)_$(PlatformShortName)_intermediates\</IntDir>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(ProjectDir)include\</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -170,28 +174,28 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="dx11_win32_renderhub_renderer.cpp" />
-    <ClCompile Include="renderhub_input.cpp" />
-    <ClCompile Include="renderhub_renderer.cpp" />
-    <ClCompile Include="renderhub_resourceloader.cpp" />
-    <ClCompile Include="win32_renderhub_resourceloader.cpp" />
-    <ClCompile Include="win32_renderhub_logging.cpp" />
-    <ClCompile Include="win32_renderhub_main.cpp" />
-    <ClCompile Include="win32_renderhub_window_settings.cpp" />
+    <ClCompile Include="source\platform-dependent\dx11_win32_renderhub_renderer.cpp" />
+    <ClCompile Include="source\platform-agnostic\renderhub_input.cpp" />
+    <ClCompile Include="source\platform-agnostic\renderhub_renderer.cpp" />
+    <ClCompile Include="source\platform-agnostic\renderhub_resourceloader.cpp" />
+    <ClCompile Include="source\platform-dependent\win32_renderhub_resourceloader.cpp" />
+    <ClCompile Include="source\platform-dependent\win32_renderhub_logging.cpp" />
+    <ClCompile Include="source\platform-dependent\win32_renderhub_main.cpp" />
+    <ClCompile Include="source\platform-dependent\win32_renderhub_window_settings.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="dx11_win32_renderhub_renderer.h" />
-    <ClInclude Include="renderhub_input.h" />
-    <ClInclude Include="renderhub_logging.h" />
-    <ClInclude Include="renderhub_renderer.h" />
-    <ClInclude Include="renderhub_resourceloader.h" />
-    <ClInclude Include="win32_renderhub_resourceloader.h" />
-    <ClInclude Include="renderhub_testing_utilities.h" />
-    <ClInclude Include="renderhub_types.h" />
-    <ClInclude Include="renderhub_assert.h" />
-    <ClInclude Include="win32_renderhub_globals.h" />
-    <ClInclude Include="win32_renderhub_logging.h" />
-    <ClInclude Include="win32_renderhub_window_settings.h" />
+    <ClInclude Include="include\dx11_win32_renderhub_renderer.h" />
+    <ClInclude Include="include\renderhub_input.h" />
+    <ClInclude Include="include\renderhub_logging.h" />
+    <ClInclude Include="include\renderhub_renderer.h" />
+    <ClInclude Include="include\renderhub_resourceloader.h" />
+    <ClInclude Include="include\win32_renderhub_resourceloader.h" />
+    <ClInclude Include="include\renderhub_testing_utilities.h" />
+    <ClInclude Include="include\renderhub_types.h" />
+    <ClInclude Include="include\renderhub_assert.h" />
+    <ClInclude Include="include\win32_renderhub_globals.h" />
+    <ClInclude Include="include\win32_renderhub_logging.h" />
+    <ClInclude Include="include\win32_renderhub_window_settings.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

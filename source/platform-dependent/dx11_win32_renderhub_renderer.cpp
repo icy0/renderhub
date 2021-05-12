@@ -9,6 +9,8 @@
 #include "renderhub_types.h"
 #include "renderhub_assert.h"
 #include "renderhub_logging.h"
+#include "renderhub_renderer.h"
+
 #include "win32_renderhub_globals.h"
 
 void win32_get_display_devices()

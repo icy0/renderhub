@@ -15,66 +15,66 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="win32_renderhub_main.cpp">
+    <ClCompile Include="source\platform-agnostic\renderhub_resourceloader.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="renderhub_input.cpp">
+    <ClCompile Include="source\platform-agnostic\renderhub_renderer.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="dx11_win32_renderhub_renderer.cpp">
+    <ClCompile Include="source\platform-agnostic\renderhub_input.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="win32_renderhub_logging.cpp">
+    <ClCompile Include="source\platform-dependent\dx11_win32_renderhub_renderer.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="win32_renderhub_window_settings.cpp">
+    <ClCompile Include="source\platform-dependent\win32_renderhub_logging.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="win32_renderhub_resourceloader.cpp">
+    <ClCompile Include="source\platform-dependent\win32_renderhub_main.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="renderhub_resourceloader.cpp">
+    <ClCompile Include="source\platform-dependent\win32_renderhub_resourceloader.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="renderhub_renderer.cpp">
+    <ClCompile Include="source\platform-dependent\win32_renderhub_window_settings.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="renderhub_types.h">
+    <ClInclude Include="include\renderhub_assert.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="renderhub_input.h">
+    <ClInclude Include="include\dx11_win32_renderhub_renderer.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="dx11_win32_renderhub_renderer.h">
+    <ClInclude Include="include\renderhub_input.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="renderhub_testing_utilities.h">
+    <ClInclude Include="include\renderhub_renderer.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="win32_renderhub_logging.h">
+    <ClInclude Include="include\renderhub_logging.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="renderhub_logging.h">
+    <ClInclude Include="include\renderhub_resourceloader.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="win32_renderhub_window_settings.h">
+    <ClInclude Include="include\renderhub_testing_utilities.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="win32_renderhub_globals.h">
+    <ClInclude Include="include\renderhub_types.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="renderhub_assert.h">
+    <ClInclude Include="include\win32_renderhub_globals.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="win32_renderhub_resourceloader.h">
+    <ClInclude Include="include\win32_renderhub_logging.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="renderhub_resourceloader.h">
+    <ClInclude Include="include\win32_renderhub_resourceloader.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="renderhub_renderer.h">
+    <ClInclude Include="include\win32_renderhub_window_settings.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
   </ItemGroup>

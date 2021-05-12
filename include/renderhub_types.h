@@ -116,17 +116,6 @@ struct OBJ_Model
 	uint32 flags;
 };
 
-struct World
-{
-	Entity* entities;
-	uint64 entity_count;
-};
-
-struct Entity
-{
-	Mesh* mesh;
-};
-
 struct Mesh
 {
 	enum
@@ -139,6 +128,17 @@ struct Mesh
 	uint64 vertex_count;
 	vertex* vertices;
 	uint32 flags;
+};
+
+struct Entity
+{
+	Mesh* mesh;
+};
+
+struct World
+{
+	Entity* entities;
+	uint64 entity_count;
 };
 
 struct Display_Properties

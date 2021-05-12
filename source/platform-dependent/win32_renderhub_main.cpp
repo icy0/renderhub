@@ -15,6 +15,7 @@
 
 uint8* g_keyboard_key_states = new uint8[256];
 Mouse_State* g_mouse_state = new Mouse_State{};
+World* g_world = new World{};
 
 Display_Properties* g_display_properties = new Display_Properties();
 Window_Properties* g_window_properties = new Window_Properties();
@@ -31,7 +32,6 @@ D3D11_VIEWPORT* g_viewport = new D3D11_VIEWPORT{0};
 
 struct IDXGIInfoQueue* g_info_queue = nullptr;
 
-World* g_world;
 
 int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine, int nCmdShow)
 {
