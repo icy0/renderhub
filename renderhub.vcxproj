@@ -176,7 +176,6 @@
   <ItemGroup>
     <ClCompile Include="source\platform-dependent\dx11_win32_renderhub_renderer.cpp" />
     <ClCompile Include="source\platform-agnostic\renderhub_input.cpp" />
-    <ClCompile Include="source\platform-agnostic\renderhub_renderer.cpp" />
     <ClCompile Include="source\platform-agnostic\renderhub_resourceloader.cpp" />
     <ClCompile Include="source\platform-dependent\win32_renderhub_resourceloader.cpp" />
     <ClCompile Include="source\platform-dependent\win32_renderhub_logging.cpp" />
@@ -187,7 +186,6 @@
     <ClInclude Include="include\dx11_win32_renderhub_renderer.h" />
     <ClInclude Include="include\renderhub_input.h" />
     <ClInclude Include="include\renderhub_logging.h" />
-    <ClInclude Include="include\renderhub_renderer.h" />
     <ClInclude Include="include\renderhub_resourceloader.h" />
     <ClInclude Include="include\win32_renderhub_resourceloader.h" />
     <ClInclude Include="include\renderhub_testing_utilities.h" />

@@ -15,7 +15,6 @@
 
 uint8* g_keyboard_key_states = new uint8[256];
 Mouse_State* g_mouse_state = new Mouse_State{};
-World* g_world = new World{};
 
 Display_Properties* g_display_properties = new Display_Properties();
 Window_Properties* g_window_properties = new Window_Properties();
@@ -45,7 +44,6 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
     ZeroMemory(g_display_properties, sizeof(Display_Properties));
     ZeroMemory(g_window_properties, sizeof(Window_Properties));
     ZeroMemory(g_viewport, sizeof(D3D11_VIEWPORT));
-    ZeroMemory(g_world, sizeof(World));
 
     win32_get_current_display_device();
     g_window_properties->window_width = g_display_properties->horizontal_pixel_count;
@@ -106,9 +104,6 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
         }
         else
         {
-            dx11_win32_update(delta_time.QuadPart);
-            dx11_win32_render();
-
             // sprintf_s(fps_print_buffer, "FPS: %.5f, CPU-Cycles / Frame: %lld", fps, delta_cycle_count);
             // rh_log_message(fps_print_buffer);
 

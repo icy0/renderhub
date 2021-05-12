@@ -133,13 +133,7 @@ struct Mesh
 struct Entity
 {
 	Mesh* mesh;
-};
-
-struct World
-{
-	Entity* entities;
-	uint64 entity_count;
-};
+};	
 
 struct Display_Properties
 {

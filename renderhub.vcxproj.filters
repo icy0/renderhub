@@ -18,9 +18,6 @@
     <ClCompile Include="source\platform-agnostic\renderhub_resourceloader.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="source\platform-agnostic\renderhub_renderer.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
     <ClCompile Include="source\platform-agnostic\renderhub_input.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
@@ -48,9 +45,6 @@
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="include\renderhub_input.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="include\renderhub_renderer.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="include\renderhub_logging.h">
