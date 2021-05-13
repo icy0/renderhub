@@ -2,8 +2,6 @@
 
 #include "renderhub_logging.h"
 
-// TODO: add stubs for when NOT compiling on _WIN32
-
 #ifdef _WIN32
 	#ifdef _MSC_VER
 		#ifndef rh_assert

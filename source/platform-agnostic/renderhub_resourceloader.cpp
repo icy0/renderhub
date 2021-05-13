@@ -1,9 +1,6 @@
 #include "renderhub_types.h"
 #include "renderhub_assert.h"
 
-// TODO(paul): for now only supports the triangle list format.
-// extend to support triangle strips -> excessive reordering necessary.
-// .obj-faces are usually all over the place and are not ordered for triangle strips.
 Mesh* convert_to_mesh(OBJ_Model* model)
 {
 	Mesh* mesh = new Mesh();
@@ -16,7 +13,7 @@ Mesh* convert_to_mesh(OBJ_Model* model)
 	mesh->vertices = new vertex[mesh->vertex_count];
 	rh_assert(mesh->vertices);
 
-	// TODO(paul): for now, these flags are just assumed to be set, therefore they are hardcoded.
+	// note(paul): for now, these flags are just assumed to be set, therefore they are hardcoded.
 	// I might demand every .obj for its faces to be triangulated, to be determined.
 	mesh->flags |= Mesh::TRIANGULATED | Mesh::BACKFACE_CULLING | Mesh::TRIANGLE_LIST;
 

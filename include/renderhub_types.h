@@ -201,7 +201,6 @@ enum KEYBOARD_KEYCODE
 	KC_RIGHTSHIFT = VK_RSHIFT,
 	KC_LCONTROL = VK_LCONTROL,
 	KC_RCONTROL = VK_RCONTROL,
-	// TODO
 	// KC_ALTGR = ?;
 
 	// signs
@@ -317,5 +316,4 @@ enum KEYBOARD_KEYCODE
 	KC_F23 = VK_F23,
 	KC_F24 = VK_F24
 };
-// TODO include linux key mapping
 #endif

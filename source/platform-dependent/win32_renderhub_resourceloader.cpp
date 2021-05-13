@@ -6,14 +6,6 @@
 #include "renderhub_assert.h"
 #include "renderhub_logging.h"
 
-// TODO(paul):	only supports triangulated models. 
-//				extend functionality to read quad models.
-
-// TODO(paul):	maybe a function to triangulate quad models.
-
-// TODO(paul):	function and data structures for reading materials
-//				and linking them to their models.
-
 fvec3 parse_vector(const char* line, int32 offset)
 {
 	fvec3 coordinates{0, 0, 0};
@@ -142,7 +134,6 @@ OBJ_Model* win32_read_obj(const char* filename)
 	char* end_of_file_pointer = file_buffer + file_size_in_bytes.QuadPart;
 	rh_assert(end_of_file_pointer > file_buffer);
 
-	// TODO(paul): compress these identical while loops somehow
 	while (incr_file_pointer < end_of_file_pointer)
 	{
 		ZeroMemory(line, line_length);

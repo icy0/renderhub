@@ -4,9 +4,6 @@
 
 #include "win32_renderhub_logging.h"
 
-// TODO(paul): add stubs for when NOT compiling on _WIN32
-
-
 #ifdef _DEBUG
 #ifdef _WIN32
 
@@ -118,14 +115,7 @@
 		#define rh_log_timing(macrodef_function_call) macrodef_function_call;
 		#endif // ifndef rh_log_timing
 #endif // ifdef _MSV_VER
-
-#else // else if _WIN32 (other OSes)
-
-	#ifdef // Linux macro
-		// TODO LINUX logging
-	#endif
-
 #endif // ifdef _WIN32
 #else // else ifdef _DEBUG 
-	// TODO(paul): insert stubs for the macros here.
+	
 #endif // ifdef _DEBUG
