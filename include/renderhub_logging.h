@@ -2,7 +2,7 @@
 
 #include <stdio.h>
 
-#include "win32_renderhub_logging.h"
+#include "win_renderhub_logging.h"
 
 #ifdef _DEBUG
 #ifdef _WIN32

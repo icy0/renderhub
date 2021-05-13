@@ -9,9 +9,9 @@
 #include "renderhub_assert.h"
 #include "renderhub_resourceloader.h"
 
-#include "win32_renderhub_resourceloader.h"
-#include "win32_renderhub_window_settings.h"
-#include "dx11_win32_renderhub_renderer.h"
+#include "win_renderhub_resourceloader.h"
+#include "win_renderhub_window_settings.h"
+#include "dx11win_renderhub_renderer.h"
 
 uint8* g_keyboard_key_states = new uint8[256];
 Mouse_State* g_mouse_state = new Mouse_State{};
@@ -30,7 +30,6 @@ ID3D11RasterizerState* g_rasterizer_state = nullptr;
 D3D11_VIEWPORT* g_viewport = new D3D11_VIEWPORT{0};
 
 struct IDXGIInfoQueue* g_info_queue = nullptr;
-
 
 int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine, int nCmdShow)
 {
@@ -106,6 +105,10 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
         {
             // sprintf_s(fps_print_buffer, "FPS: %.5f, CPU-Cycles / Frame: %lld", fps, delta_cycle_count);
             // rh_log_message(fps_print_buffer);
+
+            float color[] { 0.5f, 0.5f, 0.5f, 1.0f };
+            g_device_context->ClearRenderTargetView(g_render_target_view, color);
+            g_swap_chain->Present(0, 0);
 
             curr_cycle_count = __rdtsc();
             delta_cycle_count = curr_cycle_count - prev_cycle_count;

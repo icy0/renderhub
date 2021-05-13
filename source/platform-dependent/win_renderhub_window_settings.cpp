@@ -3,7 +3,7 @@
 
 #include "renderhub_types.h"
 #include "renderhub_input.h"
-#include "win32_renderhub_globals.h"
+#include "win_renderhub_globals.h"
 
 void win32_on_size(HWND hwnd, UINT flag, int width, int height)
 {

@@ -9,9 +9,8 @@
 #include "renderhub_types.h"
 #include "renderhub_assert.h"
 #include "renderhub_logging.h"
-#include "renderhub_renderer.h"
 
-#include "win32_renderhub_globals.h"
+#include "win_renderhub_globals.h"
 
 void win32_get_display_devices()
 {
@@ -208,17 +207,4 @@ void win32_init_directx11()
 	g_viewport->MaxDepth = 1.0f;
 
 	rh_dx_logging(g_device_context->RSSetViewports(1, g_viewport));
-}
-
-void dx11_win32_update(uint64 delta_time)
-{
-
-}
-
-void dx11_win32_render()
-{
-	rh_dx_logging(g_device_context->ClearRenderTargetView(g_render_target_view, DirectX::Colors::CornflowerBlue));
-	rh_dx_logging(g_device_context->ClearDepthStencilView(g_depth_stencil_view, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 0.0f, 0));
-	render_world();
-	rh_dx_logging(g_swap_chain->Present(0, 0));
 }
