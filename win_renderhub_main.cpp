@@ -31,6 +31,7 @@ D3D11_VIEWPORT* g_viewport = new D3D11_VIEWPORT{0};
 
 struct IDXGIInfoQueue* g_info_queue = nullptr;
 
+
 int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine, int nCmdShow)
 {
     rh_assert(g_keyboard_key_states);
@@ -93,6 +94,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
     uint64 prev_cycle_count = __rdtsc();
     uint64 delta_cycle_count = 0;
     uint64 curr_cycle_count = 0;
+    uint32 checking_delay = 0;
 
     while (msg.message != WM_QUIT)
     {
@@ -105,10 +107,6 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
         {
             // sprintf_s(fps_print_buffer, "FPS: %.5f, CPU-Cycles / Frame: %lld", fps, delta_cycle_count);
             // rh_log_message(fps_print_buffer);
-
-            float color[] { 0.5f, 0.5f, 0.5f, 1.0f };
-            g_device_context->ClearRenderTargetView(g_render_target_view, color);
-            g_swap_chain->Present(0, 0);
 
             curr_cycle_count = __rdtsc();
             delta_cycle_count = curr_cycle_count - prev_cycle_count;

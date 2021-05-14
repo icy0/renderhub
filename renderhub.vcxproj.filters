@@ -69,4 +69,7 @@
       <Filter>Headerdateien</Filter>
     </ClInclude>
   </ItemGroup>
+  <ItemGroup>
+    <Text Include="documentation\runtime_code_compilation.txt" />
+  </ItemGroup>
 </Project>

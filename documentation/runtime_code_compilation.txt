@@ -1,0 +1,154 @@
+FILETIME g_last_write = {};
+
+void get_process_by_opened_file(const wchar_t* filename, int32* process_ids, uint32* number_of_process_ids)
+{
+    char buffer[256];
+    DWORD session;
+    WCHAR session_key[CCH_RM_SESSION_KEY + 1] = {0};
+
+    DWORD error_code = RmStartSession(&session, 0, session_key);
+    
+    sprintf_s(buffer, "RmStartSession returned %d\n", error_code);
+    rh_log_message(buffer);
+
+    if (error_code == ERROR_SUCCESS)
+    {
+        error_code = RmRegisterResources(session, 1, &filename, 0, NULL, 0, NULL);
+
+        sprintf_s(buffer, "RmRegisterResources(%ls) returned %d\n", filename, error_code);
+        rh_log_message(buffer);
+
+        if (error_code == ERROR_SUCCESS)
+        {
+            DWORD reason;
+            UINT process_info_needed;
+            *number_of_process_ids = 10;
+            RM_PROCESS_INFO process_infos[10];
+
+            error_code = RmGetList(session, &process_info_needed, number_of_process_ids, process_infos, &reason);
+
+            sprintf_s(buffer, "RmGetList returned %d\n", error_code);
+            rh_log_message(buffer);
+
+            if (error_code == ERROR_SUCCESS)
+            {
+                sprintf_s(buffer, "RmGetList returned %d infos (%d needed)\n", number_of_process_ids, process_info_needed);
+                rh_log_message(buffer);
+
+                for (int32 i = 0; i < (int32) number_of_process_ids; i++)
+                {
+                    if ((wcscmp(process_infos[i].strAppName, L"Microsoft Visual Studio 2019") != 0)
+                        || (wcscmp(process_infos[i].strAppName, L"Visual Studio 2019 Remote Debugger") != 0))
+                    {
+                        process_ids[i] = process_infos[i].Process.dwProcessId;
+                    }
+
+                    /*sprintf_s(buffer, "%d.ApplicationType = %d\n", i, process_infos[i].ApplicationType);
+                    rh_log_message(buffer);
+
+                    sprintf_s(buffer, "%d.strAppName = %ls\n", i, process_infos[i].strAppName);
+                    rh_log_message(buffer);
+
+                    sprintf_s(buffer, "%d.Process.dwProcessId = %d\n", i, process_infos[i].Process.dwProcessId);
+                    rh_log_message(buffer);
+                    */
+                    HANDLE process_handle = OpenProcess(PROCESS_QUERY_INFORMATION | PROCESS_DUP_HANDLE, FALSE, process_infos[i].Process.dwProcessId);
+
+                    if (process_handle)
+                    {
+                        FILETIME ftCreate, ftExit, ftKernel, ftUser;
+
+                        if (GetProcessTimes(process_handle, &ftCreate, &ftExit, &ftKernel, &ftUser)
+                            && CompareFileTime(&process_infos[i].Process.ProcessStartTime, &ftCreate) == 0)
+                        {
+                            WCHAR exe_name[MAX_PATH];
+                            DWORD exe_name_size = MAX_PATH;
+                            if (QueryFullProcessImageNameW(process_handle, 0, exe_name, &exe_name_size)
+                                && exe_name_size <= MAX_PATH)
+                            {
+                                sprintf_s(buffer, "  = %ls\n", exe_name);
+                                rh_log_message(buffer);
+                            }
+                        }
+                        CloseHandle(process_handle);
+                    }
+                }
+            }
+        }
+        RmEndSession(session);
+    }
+}
+
+HMODULE check_game_dll(HMODULE dll, const char* game_dll, const char* game_dll_copy, update_fp& update, render_fp& render)
+{
+    HANDLE file = CreateFileA(game_dll, GENERIC_READ, NULL, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+
+    FILETIME creation = {};
+    FILETIME last_access = {};
+    FILETIME last_write = {};
+    GetFileTime(file, &creation, &last_access, &last_write);
+    CloseHandle(file);
+
+    if (CompareFileTime(&last_write, &g_last_write) > 0)
+    {
+        FreeLibrary(dll);
+        rh_assert(CopyFileA(game_dll, game_dll_copy, FALSE));
+
+        dll = LoadLibraryA(game_dll_copy);
+        rh_assert(dll);
+
+        update = (update_fp)GetProcAddress(dll, "update");
+        rh_assert(update);
+        render = (render_fp)GetProcAddress(dll, "render");
+        rh_assert(render);        
+    }
+
+    g_last_write = last_write;
+    return dll;
+}
+
+ // HINSTANCE dll = LoadLibraryExA("C:\\Development\\three-dimensional-cellular-automata\\output\\Debug_x64_binaries\\threedimensional-cellular-automata_Debug_x64.dll", NULL, LOAD_WITH_ALTERED_SEARCH_PATH);  
+
+    HANDLE file = CreateFileA(game_dll, GENERIC_READ, NULL, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+
+    FILETIME creation = {};
+    FILETIME last_access = {};
+    FILETIME last_write = {};
+    GetFileTime(file, &creation, &last_access, &g_last_write);
+    CloseHandle(file);
+
+    CopyFileA(game_dll, game_dll_copy, FALSE);
+    HMODULE dll = LoadLibraryA(game_dll_copy);
+    rh_assert(dll);
+    
+    update_fp update = (update_fp) GetProcAddress(dll, "update");
+    rh_assert(update);
+    render_fp render = (render_fp) GetProcAddress(dll, "render");
+    rh_assert(render);
+
+    //int32 process_ids[2];
+    //uint32 number_of_process_ids = 2;
+    //get_process_by_opened_file(L"C:\\Development\\three-dimensional-cellular-automata\\output\\Debug_x64_binaries\\threedimensional-cellular-automata_Debug_x64.pdb", process_ids, &number_of_process_ids);
+
+    //for (int i = 0; i < 2; i++)
+    //{
+    //    typedef NTSTATUS(CALLBACK* NtQuerySystemInformation_FType)(SYSTEM_INFORMATION_CLASS, PVOID, ULONG, PULONG);
+    //    HANDLE process_handle = OpenProcess(PROCESS_DUP_HANDLE, FALSE, process_ids[i]);
+    //    HMODULE nt_dll = LoadLibraryA("Ntdll.dll");
+    //    NtQuerySystemInformation_FType NtQuerySystemInformation = (NtQuerySystemInformation_FType)GetProcAddress(nt_dll, "NtQuerySystemInformation");
+    //    SYSTEM_PROCESS_INFORMATION system_process_information = {};
+    //    unsigned long actual_length = 0;
+    //    NTSTATUS status_code = NtQuerySystemInformation(SYSTEM_INFORMATION_CLASS::SystemProcessInformation, (void*) &system_process_information, sizeof(SYSTEM_PROCESS_INFORMATION), &actual_length);
+    //    system_process_information.
+    //}
+
+
+
+
+
+if (checking_delay++ > 40000)
+{
+    rh_log_message("checking game dll.\n");
+    dll = check_game_dll(dll, game_dll, game_dll_copy, update, render);
+    checking_delay = 0;
+}

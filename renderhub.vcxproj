@@ -198,6 +198,9 @@
     <ClInclude Include="include\win_renderhub_logging.h" />
     <ClInclude Include="include\win_renderhub_window_settings.h" />
   </ItemGroup>
+  <ItemGroup>
+    <Text Include="documentation\runtime_code_compilation.txt" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

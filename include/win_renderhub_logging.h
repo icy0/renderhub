@@ -1,5 +1,7 @@
 #pragma once
 
+#include "renderhub_types.h"
+
 void win32_setup_console_io();
 
 void win32_log_message(const char* message, const char* file, int32 line);
