@@ -33,6 +33,9 @@
     <ClCompile Include="source\platform-dependent\win_renderhub_window_settings.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
+    <ClCompile Include="win_renderhub_main.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\renderhub_assert.h">

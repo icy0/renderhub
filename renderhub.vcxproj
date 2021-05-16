@@ -184,6 +184,7 @@
     <ClCompile Include="source\platform-dependent\win_renderhub_resourceloader.cpp" />
     <ClCompile Include="source\platform-dependent\win_renderhub_logging.cpp" />
     <ClCompile Include="source\platform-dependent\win_renderhub_window_settings.cpp" />
+    <ClCompile Include="win_renderhub_main.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\dx11win_renderhub_renderer.h" />
