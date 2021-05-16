@@ -165,7 +165,7 @@ enum MOUSEBUTTON
 	X2_MOUSE_BUTTON
 };
 
-#ifdef win32_compilation
+#ifdef _WIN32
 // https://docs.microsoft.com/en-us/windows/win32/inputdev/virtual-key-codes
 enum KEYBOARD_KEYCODE
 {
