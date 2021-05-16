@@ -1,0 +1,50 @@
+{
+	"version": "2.0.0",
+	"tasks":
+	[
+		{
+			"label": "build",
+			"type": "shell",
+			"windows":
+			{
+				"command": ".\\build.bat"
+			},
+			"group":
+			{
+				"kind": "build",
+				"isDefault": true
+			},
+			"options":
+			{
+				"cwd": "${workspaceFolder}"
+			},
+			"presentation":
+			{
+				"echo": true,
+				"reveal": "always",
+				"focus": false,
+				"panel": "new",
+			}
+		}
+		// {
+		// 	"label": "run tests",
+		// 	"type": "shell",
+		// 	"windows":
+		// 	{
+		// 		"command": ".\\tests.bat"
+		// 	},
+		// 	"options":
+		// 	{
+		// 		"cwd": "${workspaceFolder}"
+		// 	},
+		// 	"group": "test",
+		// 	"presentation":
+		// 	{
+		// 		"echo": true,
+		// 		"reveal": "always",
+		// 		"focus": false,
+		// 		"panel": "new",
+		// 	}
+		// }
+	],
+}

@@ -1,0 +1,39 @@
+//------------------------------------------------------
+// NOTE(paul): These settings are just for IntelliSense.
+// They are NOT needed for building, as this happens
+// within the build.bat file.
+//------------------------------------------------------
+
+{
+    "env":
+    {
+      "projectIncludePath": ["${workspaceFolder}", "${workspaceFolder}/include"]
+    },
+    "configurations": 
+    [
+      {
+        "name": "Win32",
+        "intelliSenseMode": "msvc-x64", // "windows-msvc-x64"?
+        "includePath":
+        [
+            "${projectIncludePath}",
+            "C:/Development/renderhub/include"
+        ],
+        "defines": ["UNICODE", "_UNICODE", "_DEBUG", "_WIN32"],
+        // "forcedInclude": [""],
+        // "compilerPath": "C:/Program Files (x86)/Microsoft Visual Studio/2019/Community/VC/Tools/MSVC/14.28.29910/bin/Hostx64/x64/cl.exe",
+        "cStandard": "c11",
+        "cppStandard": "c++17"
+        // "configurationProvider": {},
+        // "windowsSdkVersion" : {},
+        // "compileCommands": "",
+        // "browse":
+        // {
+        //     "path": ["${workspaceFolder}"],
+        //     "limitSymbolsToIncludedHeaders": true,
+        //     "databaseFilename": ""
+        // }
+      }
+    ],
+    "version": 4
+  }
