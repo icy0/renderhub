@@ -1,6 +1,7 @@
 #include <assert.h>
 
 #include "renderhub_types.h"
+#include "renderhub_logging.h"
 #include "renderhub_input.h"
 
 void register_keyboard_input(uint8* key_states, uint64 virtual_keycode, uint8 is_down)

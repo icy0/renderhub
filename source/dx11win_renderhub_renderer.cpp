@@ -15,14 +15,14 @@
 void win32_get_display_devices()
 {
 	int32 device_count = 0;
-	DISPLAY_DEVICE dummy_display_device = {};
-	while (EnumDisplayDevices(NULL, device_count, &dummy_display_device, EDD_GET_DEVICE_INTERFACE_NAME))
+	DISPLAY_DEVICEA dummy_display_device = {};
+	while (EnumDisplayDevicesA(NULL, device_count, &dummy_display_device, EDD_GET_DEVICE_INTERFACE_NAME))
 	{
 		device_count++;
 	}
 
-	DISPLAY_DEVICE* display_device = new DISPLAY_DEVICE[device_count];
-	ZeroMemory(display_device, sizeof(DISPLAY_DEVICE) * device_count);
+	DISPLAY_DEVICEA* display_device = new DISPLAY_DEVICEA[device_count];
+	ZeroMemory(display_device, sizeof(DISPLAY_DEVICEA) * device_count);
 
 	int32* device_graphics_modes_count = new int32[device_count];
 	ZeroMemory(device_graphics_modes_count, sizeof(int32) * device_count);
@@ -31,24 +31,24 @@ void win32_get_display_devices()
 
 	for (int32 display_devices = 0; display_devices < device_count; display_device++)
 	{
-		EnumDisplayDevices(NULL, display_devices, &display_device[display_devices], EDD_GET_DEVICE_INTERFACE_NAME);
-		DEVMODE dummy_devmode;
-		while (EnumDisplaySettings(display_device[display_devices].DeviceName, device_graphics_modes_count[display_devices], &dummy_devmode))
+		EnumDisplayDevicesA(NULL, display_devices, &display_device[display_devices], EDD_GET_DEVICE_INTERFACE_NAME);
+		DEVMODEA dummy_devmode;
+		while (EnumDisplaySettingsA(display_device[display_devices].DeviceName, device_graphics_modes_count[display_devices], &dummy_devmode))
 		{
 			device_graphics_modes_count[display_devices]++;
 			total_sum_of_graphics_modes++;
 		}
 	}
 
-	DEVMODE* device_graphics_modes = new DEVMODE[total_sum_of_graphics_modes];
-	ZeroMemory(device_graphics_modes, sizeof(DEVMODE) * total_sum_of_graphics_modes);
+	DEVMODEA* device_graphics_modes = new DEVMODEA[total_sum_of_graphics_modes];
+	ZeroMemory(device_graphics_modes, sizeof(DEVMODEA) * total_sum_of_graphics_modes);
 
 	int32 index = 0;
 	for (int display_devices = 0; display_devices < device_count; display_devices++)
 	{
 		for (int graphics_modes = 0; graphics_modes < device_graphics_modes_count[display_devices]; graphics_modes++, index++)
 		{
-			EnumDisplaySettings(display_device[display_devices].DeviceName, graphics_modes, &device_graphics_modes[index]);
+			EnumDisplaySettingsA(display_device[display_devices].DeviceName, graphics_modes, &device_graphics_modes[index]);
 		}
 	}
 }
@@ -95,9 +95,9 @@ void win32_init_directx11()
 	swap_chain_description.SampleDesc.Count = 1;
 	swap_chain_description.SampleDesc.Quality = 0;
 	swap_chain_description.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
-	swap_chain_description.BufferCount = 2;
+	swap_chain_description.BufferCount = RENDERER_BUFFER_COUNT;
 	swap_chain_description.OutputWindow = g_window_properties->window_handle;
-	swap_chain_description.Windowed = true;
+	swap_chain_description.Windowed = false;
 	swap_chain_description.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
 	swap_chain_description.Flags = 0;
 

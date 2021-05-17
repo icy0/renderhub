@@ -3,6 +3,7 @@
 #include <stdio.h>
 
 #include "win_renderhub_logging.h"
+#include "renderhub_assert.h"
 
 #ifdef _DEBUG
 #ifdef _WIN32

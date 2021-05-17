@@ -5,6 +5,8 @@
 
 #include "renderhub_types.h"
 
+#define RENDERER_BUFFER_COUNT 2
+
 extern uint8* g_keyboard_key_states;
 extern Mouse_State* g_mouse_state;
 
