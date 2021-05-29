@@ -93,12 +93,12 @@ struct vertex
 	fvec3 normal;
 };
 
-struct OBJ_Face
+struct obj_face
 {
 	ivec3 vertices[3];
 };
 
-struct OBJ_Model
+struct obj_model
 {
 	enum
 	{
@@ -112,11 +112,11 @@ struct OBJ_Model
 	fvec3* vertex_positions;
 	fvec3* vertex_texcoords;
 	fvec3* vertex_normals;
-	OBJ_Face* faces;
+	obj_face* faces;
 	uint32 flags;
 };
 
-struct Mesh
+struct mesh
 {
 	enum
 	{
@@ -130,26 +130,26 @@ struct Mesh
 	uint32 flags;
 };
 
-struct Entity
+struct entity
 {
-	Mesh* mesh;
+	mesh* mesh;
 };	
 
-struct Display_Properties
+struct display_properties
 {
 	uint32 horizontal_pixel_count;
 	uint32 vertical_pixel_count;
 	uint32 refresh_rate;
 };
 
-struct Window_Properties
+struct window_properties
 {
 	uint32 window_width;
 	uint32 window_height;
 	HWND window_handle;
 };
 
-struct Mouse_State
+struct mouse_state
 {
 	uint8 button_state_info[5];
 	int32 cursor_position_x;

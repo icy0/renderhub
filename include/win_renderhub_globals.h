@@ -5,13 +5,13 @@
 
 #include "renderhub_types.h"
 
-#define RENDERER_BUFFER_COUNT 2
+#define RENDERER_BUFFER_COUNT 1
 
 extern uint8* g_keyboard_key_states;
-extern Mouse_State* g_mouse_state;
+extern mouse_state* g_mouse_state;
 
-extern Window_Properties* g_window_properties;
-extern Display_Properties* g_display_properties;
+extern window_properties* g_window_properties;
+extern display_properties* g_display_properties;
 
 extern IDXGISwapChain* g_swap_chain;
 extern ID3D11Device* g_device;

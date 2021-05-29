@@ -43,9 +43,9 @@ fvec3 parse_vector(const char* line, int32 offset)
 	return coordinates;
 }
 
-OBJ_Face parse_face(const char* line)
+obj_face parse_face(const char* line)
 {
-	OBJ_Face face = {};
+	obj_face face = {};
 
 	const uint32 number_buffer_size = 256;
 	char number_buffer[number_buffer_size];
@@ -104,7 +104,7 @@ OBJ_Face parse_face(const char* line)
 	return face;
 }
 
-OBJ_Model* win32_read_obj(const char* filename)
+obj_model* win32_read_obj(const char* filename)
 {
 	HANDLE file_handle;
 	ZeroMemory(&file_handle, sizeof(HANDLE));
@@ -123,7 +123,7 @@ OBJ_Model* win32_read_obj(const char* filename)
 	DWORD bytes_read; // note(paul): necessary for function call, won't be used afterwards.
 	rh_assert(ReadFile(file_handle, file_buffer, (DWORD)file_size_in_bytes.QuadPart, &bytes_read, NULL));
 
-	OBJ_Model* model = new OBJ_Model{};
+	obj_model* model = new obj_model{};
 	rh_assert(model);
 
 	const int32 line_length = 256;
@@ -196,7 +196,7 @@ OBJ_Model* win32_read_obj(const char* filename)
 			}
 			if (is_mtllib_line)
 			{
-				model->flags |= OBJ_Model::MTLLIB_PRESENT;
+				model->flags |= obj_model::MTLLIB_PRESENT;
 			}
 			else
 			{
@@ -229,7 +229,7 @@ OBJ_Model* win32_read_obj(const char* filename)
 	model->vertex_normals = new fvec3[model->vertex_normals_count];
 	rh_assert(model->vertex_normals);
 
-	model->faces = new OBJ_Face[model->face_count];
+	model->faces = new obj_face[model->face_count];
 	rh_assert(model->faces);
 
 	incr_file_pointer = file_buffer;

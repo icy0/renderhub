@@ -9,6 +9,10 @@
 void win32_on_size(HWND hwnd, UINT flag, int width, int height)
 {
     char buffer[256];
+    rh_assert(hwnd);
+    rh_assert(width != 0);
+    rh_assert(height != 0);
+
     g_window_properties->window_width = width;
     g_window_properties->window_height = height;
     sprintf_s(buffer, "WM_SIZE: W:%d, H:%d", width, height);
@@ -16,20 +20,24 @@ void win32_on_size(HWND hwnd, UINT flag, int width, int height)
 
     if (g_swap_chain)
     {
-        g_device_context->OMSetRenderTargets(0, 0, 0);
+        rh_dx_logging(g_device_context->OMSetRenderTargets(0, 0, 0));
 
-        g_render_target_view->Release();
-        g_depth_stencil_view->Release();
-        g_swap_chain->ResizeBuffers(
-            RENDERER_BUFFER_COUNT,
-            g_window_properties->window_width,
-            g_window_properties->window_height,
-            DXGI_FORMAT_R8G8B8A8_UNORM,
-            NULL);
+        rh_dx_logging(g_render_target_view->Release());
+        g_render_target_view = nullptr;
+        rh_assert(!g_render_target_view);
+
+        rh_dx_logging(g_depth_stencil_view->Release());
+        g_depth_stencil_view = nullptr;
+        rh_assert(!g_depth_stencil_view);
+        
+        // NOTE(paul): don't pass arguments here, as the swapchain will
+        // reuse the previous configuration.
+        rh_dx_logging(g_swap_chain->ResizeBuffers(0, 0, 0, DXGI_FORMAT_UNKNOWN, 0));
 
         ID3D11Texture2D* back_buffer = nullptr;
-        g_swap_chain->GetBuffer(0, __uuidof(ID3D11Texture2D), (void**) &back_buffer);
-        g_device->CreateRenderTargetView(back_buffer, nullptr, &g_render_target_view);
+        rh_dx_logging(g_swap_chain->GetBuffer(0, __uuidof(ID3D11Texture2D), (void**) &back_buffer));
+        rh_dx_logging(g_device->CreateRenderTargetView(back_buffer, nullptr, &g_render_target_view));
+        rh_assert(g_render_target_view);
 
         rh_dx_logging(back_buffer->Release());
         back_buffer = nullptr;
@@ -49,14 +57,16 @@ void win32_on_size(HWND hwnd, UINT flag, int width, int height)
         depth_stencil_buffer_description.SampleDesc.Quality = 0;
         depth_stencil_buffer_description.Usage = D3D11_USAGE_DEFAULT;
 
-        g_device->CreateTexture2D(&depth_stencil_buffer_description, nullptr, &back_buffer);
-        g_device->CreateDepthStencilView(back_buffer, nullptr, &g_depth_stencil_view);
+        rh_dx_logging(g_device->CreateTexture2D(&depth_stencil_buffer_description, nullptr, &back_buffer));
+        rh_dx_logging(g_device->CreateDepthStencilView(back_buffer, nullptr, &g_depth_stencil_view));
+        rh_assert(g_depth_stencil_view);
 
         rh_dx_logging(back_buffer->Release());
         back_buffer = nullptr;
         rh_assert(!back_buffer);
 
-        g_device_context->OMSetRenderTargets(1, &g_render_target_view, g_depth_stencil_view);
+        rh_dx_logging(g_device_context->OMSetRenderTargets(1, &g_render_target_view, g_depth_stencil_view));
+        rh_dx_logging(g_device_context->RSSetViewports(1, g_viewport));
     }
 }
 

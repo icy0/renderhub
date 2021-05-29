@@ -97,8 +97,9 @@ void win32_init_directx11()
 	swap_chain_description.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
 	swap_chain_description.BufferCount = RENDERER_BUFFER_COUNT;
 	swap_chain_description.OutputWindow = g_window_properties->window_handle;
-	swap_chain_description.Windowed = false;
-	swap_chain_description.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
+	swap_chain_description.Windowed = true;
+	// swap_chain_description.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
+	swap_chain_description.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
 	swap_chain_description.Flags = 0;
 
 	uint32 device_creation_flags = 0;
@@ -183,6 +184,8 @@ void win32_init_directx11()
 	rh_assert(SUCCEEDED(result));
 	rh_assert(g_depth_stencil_state);
 
+	rh_dx_logging(g_device_context->OMSetDepthStencilState(g_depth_stencil_state, 1));
+
 	D3D11_RASTERIZER_DESC rasterizer_state_description = {};
 	rasterizer_state_description.FillMode = D3D11_FILL_SOLID;
 	rasterizer_state_description.CullMode = D3D11_CULL_BACK;
@@ -199,6 +202,8 @@ void win32_init_directx11()
 	rh_assert(SUCCEEDED(result));
 	rh_assert(g_rasterizer_state);
 
+	rh_dx_logging(g_device_context->RSSetState(g_rasterizer_state));
+
 	g_viewport->Width = (FLOAT) g_window_properties->window_width;
 	g_viewport->Height = (FLOAT) g_window_properties->window_height;
 	g_viewport->TopLeftX = 0.0f;
@@ -206,5 +211,6 @@ void win32_init_directx11()
 	g_viewport->MinDepth = 0.0f;
 	g_viewport->MaxDepth = 1.0f;
 
+	rh_dx_logging(g_device_context->OMSetRenderTargets(1, &g_render_target_view, g_depth_stencil_view));
 	rh_dx_logging(g_device_context->RSSetViewports(1, g_viewport));
 }

@@ -1,3 +1,3 @@
 #pragma once
 
-Mesh* convert_to_mesh(OBJ_Model* model);
+mesh* convert_to_mesh(obj_model* model);

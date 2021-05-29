@@ -1,21 +1,21 @@
 #include "renderhub_types.h"
 #include "renderhub_assert.h"
 
-Mesh* convert_to_mesh(OBJ_Model* model)
+mesh* convert_to_mesh(obj_model* model)
 {
-	Mesh* mesh = new Mesh();
-	rh_assert(mesh);
+	mesh* new_mesh = new mesh();
+	rh_assert(new_mesh);
 
 	rh_assert(/*actual vertex count*/ (model->face_count * 3) <= 
-		/*max vertex count*/ ((uint64)1) << ((sizeof(mesh->vertex_count) * 8) - 1));
+		/*max vertex count*/ ((uint64)1) << ((sizeof(new_mesh->vertex_count) * 8) - 1));
 
-	mesh->vertex_count = model->face_count * (uint64)3;
-	mesh->vertices = new vertex[mesh->vertex_count];
-	rh_assert(mesh->vertices);
+	new_mesh->vertex_count = model->face_count * (uint64)3;
+	new_mesh->vertices = new vertex[new_mesh->vertex_count];
+	rh_assert(new_mesh->vertices);
 
 	// note(paul): for now, these flags are just assumed to be set, therefore they are hardcoded.
 	// I might demand every .obj for its faces to be triangulated, to be determined.
-	mesh->flags |= Mesh::TRIANGULATED | Mesh::BACKFACE_CULLING | Mesh::TRIANGLE_LIST;
+	new_mesh->flags |= mesh::TRIANGULATED | mesh::BACKFACE_CULLING | mesh::TRIANGLE_LIST;
 
 	uint32 vertex_counter = 0;
 	
@@ -26,13 +26,13 @@ Mesh* convert_to_mesh(OBJ_Model* model)
 		{
 			ivec3 indices = model->faces[face_index].vertices[vertex_of_face_index];
 
-			mesh->vertices[vertex_counter].position = model->vertex_positions[indices.x];
-			mesh->vertices[vertex_counter].texcoords = { model->vertex_texcoords[indices.y].x, model->vertex_texcoords[indices.y].y };
-			mesh->vertices[vertex_counter].normal = model->vertex_normals[indices.z];
+			new_mesh->vertices[vertex_counter].position = model->vertex_positions[indices.x];
+			new_mesh->vertices[vertex_counter].texcoords = { model->vertex_texcoords[indices.y].x, model->vertex_texcoords[indices.y].y };
+			new_mesh->vertices[vertex_counter].normal = model->vertex_normals[indices.z];
 			vertex_counter++;
-			rh_assert(vertex_counter <= mesh->vertex_count);
+			rh_assert(vertex_counter <= new_mesh->vertex_count);
 		}
 	}
 
-	return mesh;
+	return new_mesh;
 }
