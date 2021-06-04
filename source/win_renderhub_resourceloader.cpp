@@ -104,6 +104,30 @@ obj_face parse_face(const char* line)
 	return face;
 }
 
+void read_file_binary(const char* filename, char** file_bytes, uint64* file_size_in_bytes)
+{
+	char* file_buffer;
+    HANDLE file_handle;
+    LARGE_INTEGER file_size_in_bytes_temp = {};
+
+	ZeroMemory(&file_handle, sizeof(HANDLE));
+
+	file_handle = CreateFileA(filename, GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+	rh_assert(file_handle);
+
+	GetFileSizeEx(file_handle, &file_size_in_bytes_temp);
+    *file_size_in_bytes = file_size_in_bytes_temp.QuadPart;
+	rh_assert(file_size_in_bytes);
+
+	file_buffer = new char[*file_size_in_bytes];
+	rh_assert(file_buffer);
+
+	DWORD bytes_read = {}; // note(paul): necessary for function call, won't be used afterwards.
+	rh_assert(ReadFile(file_handle, (void*) file_buffer, *file_size_in_bytes, &bytes_read, NULL));
+
+    *file_bytes = file_buffer;
+}
+
 obj_model* win32_read_obj(const char* filename)
 {
 	HANDLE file_handle;
