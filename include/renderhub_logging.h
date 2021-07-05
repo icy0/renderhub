@@ -53,6 +53,7 @@
 					DXGI_INFO_QUEUE_MESSAGE* message = new DXGI_INFO_QUEUE_MESSAGE[message_length];\
 					result = g_info_queue->GetMessage(DXGI_DEBUG_ALL, 0, message, &message_length);\
 					rh_log_error(message->pDescription);\
+					delete[] message;\
 				}\
 				if(message_count > 0)\
 				{\
@@ -65,6 +66,31 @@
 			}\
 		}
 	#endif // ifndef rh_dx_logging
+
+	#ifndef rh_dx_logging_nobreak
+	#define rh_dx_logging_nobreak(dx_call)\
+		{\
+			if (g_info_queue)\
+			{\
+				g_info_queue->ClearStoredMessages(DXGI_DEBUG_ALL);\
+				(dx_call);\
+				uint64 message_count = g_info_queue->GetNumStoredMessages(DXGI_DEBUG_ALL);\
+				for (int i = 0; i < message_count; i++)\
+				{\
+					SIZE_T message_length = 0;\
+					HRESULT result = g_info_queue->GetMessage(DXGI_DEBUG_ALL, 0, NULL, &message_length);\
+					DXGI_INFO_QUEUE_MESSAGE* message = new DXGI_INFO_QUEUE_MESSAGE[message_length];\
+					result = g_info_queue->GetMessage(DXGI_DEBUG_ALL, 0, message, &message_length);\
+					rh_log_error(message->pDescription);\
+					delete[] message;\
+				}\
+			}\
+			else\
+			{\
+				rh_log_warning("tried to log a directx call without an active IDXGIInfoQueue.");\
+			}\
+		}
+	#endif // ifndef rh_dx_logging_nobreak
 
 	#ifdef _MSC_VER
 		#ifndef rh_log_timing
