@@ -12,47 +12,6 @@
 
 #include "win_renderhub_globals.h"
 
-void win32_get_display_devices()
-{
-	int32 device_count = 0;
-	DISPLAY_DEVICEA dummy_display_device = {};
-	while (EnumDisplayDevicesA(NULL, device_count, &dummy_display_device, EDD_GET_DEVICE_INTERFACE_NAME))
-	{
-		device_count++;
-	}
-
-	DISPLAY_DEVICEA* display_device = new DISPLAY_DEVICEA[device_count];
-	ZeroMemory(display_device, sizeof(DISPLAY_DEVICEA) * device_count);
-
-	int32* device_graphics_modes_count = new int32[device_count];
-	ZeroMemory(device_graphics_modes_count, sizeof(int32) * device_count);
-
-	int32 total_sum_of_graphics_modes = 0;
-
-	for (int32 display_devices = 0; display_devices < device_count; display_device++)
-	{
-		EnumDisplayDevicesA(NULL, display_devices, &display_device[display_devices], EDD_GET_DEVICE_INTERFACE_NAME);
-		DEVMODEA dummy_devmode;
-		while (EnumDisplaySettingsA(display_device[display_devices].DeviceName, device_graphics_modes_count[display_devices], &dummy_devmode))
-		{
-			device_graphics_modes_count[display_devices]++;
-			total_sum_of_graphics_modes++;
-		}
-	}
-
-	DEVMODEA* device_graphics_modes = new DEVMODEA[total_sum_of_graphics_modes];
-	ZeroMemory(device_graphics_modes, sizeof(DEVMODEA) * total_sum_of_graphics_modes);
-
-	int32 index = 0;
-	for (int display_devices = 0; display_devices < device_count; display_devices++)
-	{
-		for (int graphics_modes = 0; graphics_modes < device_graphics_modes_count[display_devices]; graphics_modes++, index++)
-		{
-			EnumDisplaySettingsA(display_device[display_devices].DeviceName, graphics_modes, &device_graphics_modes[index]);
-		}
-	}
-}
-
 void win32_get_current_display_device()
 {
 	DEVMODE device_graphics_mode = {};
@@ -118,7 +77,7 @@ void win32_init_directx11()
 		D3D_FEATURE_LEVEL_9_1
 	};
 
-	rh_dx_logging(result = D3D11CreateDeviceAndSwapChain(NULL, 
+	rh_dx_logging_nobreak(result = D3D11CreateDeviceAndSwapChain(NULL, 
 		D3D_DRIVER_TYPE_HARDWARE, 
 		NULL, 
 		device_creation_flags,
